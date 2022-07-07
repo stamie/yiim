@@ -236,7 +236,7 @@ class NausysBooking extends Booking
                     if (!$is_sale || ($userPrice < $listPrice)) {
                         $list[] = $yachtProperties;
                         $Ids[] = $yachtProperties['id'];
-                        //$list2[] = $theYacht->id;
+                        
                     }
                 }
             }
@@ -245,68 +245,11 @@ class NausysBooking extends Booking
         return ['list' => $list, 'Ids' => $Ids];
     }
 
-    private static function onDay($from, $to, $attributes, $orderBy = 2, $ascOrDesc = 0, $page = 1, $resultsPerPage = self::RESULTS_PER_PAGE)
+    private static function onDay($from, $to, $page = 1, $resultsPerPage = self::RESULTS_PER_PAGE)
     {
         $cred   = new Nausys();
-
-        $ports = [];
-        $countries = [];
-        $yachtCategories = []; // lefejlesztve NAUSYS
-        $args = isset($attributes['args']) ? $attributes['args'] : [];
-
-        $equipments_ids = [];
-        if (
-            isset($args['feauteres'])
-            && is_array($args['feauteres'])
-            && count($args['feauteres']) > 0
-        ) {
-            $equipments_ids = parent::boats_feauteres_ids($args['feauteres'], 1);
-            if (is_array($equipments_ids) && count($equipments_ids) > 0) {
-                $equipments_ids = ['equipments' => $equipments_ids];
-            }
-        }
-
-        $minLength = isset($args['minLength']) ? ['lengthFrom' => round($args['minLength'])] : [];
-        $maxLength = isset($args['maxLength']) ? ['lengthTo'   => round($args['maxLength'])] : [];
-
-        $cabins = [];
-        if (isset($args['cabins']) && is_array($args['cabins'])) {
-            foreach ($args['cabins'] as $cabin) {
-                if ($cabin == 6) {
-                    for ($number = 6; $number <= parent::max_cabins(); $number++) {
-                        $cabins[] = $number;
-                    }
-                } else {
-                    $cabins[] = $cabin;
-                }
-            }
-        }
-        if (count($cabins) > 0) {
-            $cabins = ['cabins' => $cabins];
-        }
+        
         $ignoreOptions = false;
-        if (is_array($attributes)) {
-            if (isset($attributes['ports']) && is_array($attributes['ports']) && count($attributes['ports']) > 0) {
-                $ports['locations'] = $attributes['ports'];
-            }
-            if (isset($attributes['countries']) && is_array($attributes['countries']) && count($attributes['countries']) > 0) {
-                $countries['countries'] = $attributes['countries'];
-            }
-
-            if (isset($attributes['yacht_categories']) && is_array($attributes['yacht_categories']) && count($attributes['yacht_categories']) > 0) {
-                $yachtCategories['yachtCategories'] = $attributes['yacht_categories'];
-            }
-            if (isset($attributes['ignoreOptions']) && $attributes['ignoreOptions'] == '1') {
-                $ignoreOptions = true;
-            }
-        }
-        $order = [];
-        if ($orderBy > 1 && $orderBy < 6) {
-            $order = [
-                'orderby' => $orderBy,
-                'desc'    => $ascOrDesc
-            ];
-        }
         $resultsPerPage2 = 0;
         if ($page == 1) {
             $resultsPerPage2 = count(Yacht::find()->all());
@@ -320,8 +263,7 @@ class NausysBooking extends Booking
                 'periodTo'       => $to,
                 'resultsPerPage' => $resultsPerPage2,
                 'resultsPage'    => 1
-            ] + $ports + $countries + $equipments_ids + $minLength + $maxLength + $cabins
-                + $yachtCategories + $order + ['ignoreOptions' => $ignoreOptions]
+            ] + ['ignoreOptions' => $ignoreOptions]
         );
 
         return $authAndPostFields;
@@ -396,26 +338,20 @@ class NausysBooking extends Booking
                 'desc'    => $ascOrDesc
             ];
         }
-        $page2 = $page;
-        $authAndPostFields[] = self::onDay($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
+
+        $authAndPostFields[] = self::onDay($from, $to, $page, $resultsPerPage);
         foreach ($authAndPostFields as $auth) {
-            $returnCount = 0;
-            $prevReturnCount = 0;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, self::$freeYachtsSearcUrl);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 400);
-
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $auth);
-
             $header = array('Content-Type: application/json');
-
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $exec = curl_exec($ch);
             curl_close($ch);
-
             if (!$exec) {
                 return false;
             }
@@ -425,31 +361,10 @@ class NausysBooking extends Booking
                 $obj = $exec->freeYachtsInPeriod;
                 $obj = self::convertYachtList($obj, $xml_id, $is_sale, $order);
                 $Obj = self::arrayMerge($Obj, $obj, $xml_id, $orderBy, $ascOrDesc);
-                $prevReturnCount = $returnCount;
-                $returnCount     = count($Obj['list']); // ($returnCount); ($maxCount);
-
             } else {
                 break;
             }
-            //Ágyak szűrése ha vanif (isset($args['minBerth']) && $args['minBerth'] > 0){
-            if (isset($attributes['args']['minBerth']) || isset($attributes['args']['maxBerth'])) {
-                $minBerths = isset($attributes['args']['minBerth']) ? (intval($attributes['args']['minBerth'])) : 0;
-                $maxBerths = isset($attributes['args']['maxBerth']) ? intval($attributes['args']['maxBerth']) : -1;
-
-                $Obj = parent::boats_berths($Obj, $minBerths, $maxBerths);
-            }
-
-            //Model szerinti szűrés ha van
-            if (isset($attributes['args']['models']) && $attributes['args']['models'] != '-') {
-                $Obj = parent::boats_models($attributes['args']['models'], $Obj);
-            }
-
-            $returnCount = count($Obj['list']); // ($Obj);
-            //Optional extras szerinti szűrés ha van
-            // lefejlesztve NAUSYS Bareboat or creawed De a Cabin Flottilla Powered Berth All incluive nincs lefejlesztve!!!!
-            if (isset($attributes['args']['selectedServiceTypes']) && $attributes['args']['selectedServiceTypes'] != "All") { // (isset($attributes['args']['selectedServiceTypes']);
-                $Obj = parent::search_boats_with_service_types($attributes['args']['selectedServiceTypes'], $Obj);
-            }
+         
         }
         $count = is_array($Obj['Ids']) ? count($Obj['Ids']) : 0;
         return isset($Obj) ? $Obj : ['list' => [], 'count' => $count];
