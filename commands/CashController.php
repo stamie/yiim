@@ -22,10 +22,13 @@ use app\models\Xml;
 use app\models\PortsInCities;
 use app\models\Cash;
 use app\models\CashLog;
+use app\models\YachtCash;
+use app\models\Yacht;
 use app\classes\booking\Cashing;
-
-
-use function YoastSEO_Vendor\GuzzleHttp\json_decode;
+use app\models\YachtCategory;
+use app\models\YachtDatas1;
+use app\models\YachtDatas3;
+use app\models\YachtModel;
 
 class CashController extends Controller
 {
@@ -37,18 +40,19 @@ class CashController extends Controller
         $cashLog->start_datetime = date('Y-m-d H:i:s');
         $cashLog->type = 'yacht cash';
         $cashLog->save();
-        
+
         if ($is_run == 1) {
             //Összes null végű CashLog lezárása
-            if (is_array($allCashLogs)){
-            foreach($allCashLogs as $cashLogNeedClose){
-                $d = date('Y-m-d H:i:s');
-                $cashLogNeedClose->end_datetime = $d;
-                $cashLogNeedClose->ret_value = 'ERROR (UNDEFINIED)';
-                $cashLogNeedClose->save(0);
-            }}
+            if (is_array($allCashLogs)) {
+                foreach ($allCashLogs as $cashLogNeedClose) {
+                    $d = date('Y-m-d H:i:s');
+                    $cashLogNeedClose->end_datetime = $d;
+                    $cashLogNeedClose->ret_value = 'ERROR (UNDEFINIED)';
+                    $cashLogNeedClose->save(0);
+                }
+            }
         } else {
-            if (is_array($allCashLogs) && count($allCashLogs) > 0){
+            if (is_array($allCashLogs) && count($allCashLogs) > 0) {
                 $d = date('Y-m-d H:i:s');
                 $cashLog->end_datetime = $d;
                 $cashLog->ret_value = 'ERROR (RUN ANY JOBS)';
@@ -70,7 +74,7 @@ class CashController extends Controller
                 return ExitCode::UNSPECIFIED_ERROR;
             }
         }
-        
+
         $d = date('Y-m-d H:i:s');
         $cashLog->end_datetime = $d;
         $cashLog->ret_value = 'OK';
@@ -103,7 +107,7 @@ class CashController extends Controller
                 $booking1 = $bookingClasses::freeYachtsSearch($date_from, $duration, $flexibility, $lists, $xml->id, $is_sale, $orderBy, $ascOrDesc);
                 $booking = $booking1; //array_merge($booking, $booking1); <-- fejlesztendő
                 //var_dump($booking);
-                if(!$booking)
+                if (!$booking)
                     return false;
 
                 $exec = json_encode($booking);
@@ -124,5 +128,67 @@ class CashController extends Controller
             }
         }
         return $return;
+    }
+
+    public function actionYachtcasher()
+    {
+        $update_datetime = date("Y-m-d H:i:s");
+        $date_from = date('Y-m-d');
+        YachtCash::deleteAll("'$date_from' > date_from");
+        $cashes = Cash::find()->where("'$date_from' <= from_date")->all();
+        foreach ($cashes as $cash) {
+            $exec = $cash->json_value;
+            if ($exec && $exec != 'false') {
+                $exec = json_decode($exec, true);
+                if (isset($exec["list"])) {
+                    $list = $exec["list"];
+                    if ($list && is_array($list)) {
+                        foreach ($list as $elem) {
+                            $yachtCash = YachtCash::findOne(["yacht_id" => $elem["id"], 'date_from' => $cash->from_date]);
+                            $yacht = Yacht::findOne($elem["id"]);
+
+                            if (empty($yachtCash)) {
+                                $yachtCash = new YachtCash();
+                                $yachtCash->yacht_id    = $elem["id"];
+                                $yachtCash->date_from   = $cash->from_date;
+                                $yachtCash->json_value  = json_encode($elem);
+                                $yachtCash->xml_id      = $cash->xml_id;
+                                $yachtCash->location_id = $elem["location_id"];
+                                if ($yacht) {
+                                    $yachtModel            = YachtModel::findOne(["xml_json_id" => $yacht->yacht_model_id, "xml_id" => $yacht->xml_id]);
+                                    $yachtCash->model_id   = $yachtModel->xml_json_id;
+                                    $yachtCash->model      = $yachtModel->name;
+                                    $yachtCategory         = YachtCategory::findOne(['xml_id' => $yachtModel->xml_id, 'xml_json_id' => $yachtModel->category_xml_id]);
+                                    $yachtCash->length     = $yachtModel->loa;
+                                    $yachtCash->category   = $yachtCategory->name;
+                                    $yachtCash->user_price = 0;
+                                    $yachtCash->save();
+                                }
+                            }
+                            if ($yacht && $yachtCash && $yachtCash->user_price != floatval($elem["priceForUser"])) {
+                                $yachtCash->user_price = floatval($elem["priceForUser"]);
+                                $yachtCash->currency   = $elem["currency"];
+                                $yacht1 = YachtDatas1::findOne($yacht->id);
+                                if ($yacht1) {
+                                    $yachtCash->beds = $yacht1->berths_total;
+                                    $yachtCash->cabins = $yacht1->cabins;
+                                }
+                                $yacht3 = YachtDatas3::findOne($yacht->id);
+                                if ($yacht3)
+                                    $yachtCash->service_types = $yacht3->charter_type;
+                                $yachtCash->capacity = $yacht->max_person;
+                                $yachtCash->builder_year = $yacht->build_year;
+                            }
+                            if ($yachtCash) {
+                                $yachtCash->update_datetime = $update_datetime;
+                                $yachtCash->save(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        YachtCash::deleteAll("'$update_datetime' > update_datetime");
+        return ExitCode::OK;
     }
 }

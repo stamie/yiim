@@ -90,7 +90,7 @@ class DestinationYachtCategory extends \yii\db\ActiveRecord
         }
         $return = [];
         foreach ($array as $value) {
-            $return[] = $value->xml_json_id;
+            $return[] = $value->name;
         }
 
         return $return;

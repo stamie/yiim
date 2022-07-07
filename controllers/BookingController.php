@@ -129,6 +129,7 @@ class BookingController extends \yii\web\Controller
         $ignoreOptions = $request->get('ignoreOptions') ? $request->get('ignoreOptions') : '0';
         $selectedCategories = $request->get('selectedCategories') ? $request->get('selectedCategories') : null;
         $dest_ids = $request->get('dest_ids') ? $request->get('dest_ids') : null;
+        $cabins = $request->get('cabins') ? $request->get('cabins') :  null;
         $isset1 = $request->post('duration');
         $isset2 = $request->post('date_from');
         $feauteres = null;
@@ -147,8 +148,11 @@ class BookingController extends \yii\web\Controller
             $ignoreOptions = $request->post('ignoreOptions') ? $request->post('ignoreOptions') : '0';
             $selectedCategories = $request->post('selectedCategories') ? $request->post('selectedCategories') : null;
             $feauteres = $request->post('feauteres') ? $request->post('feauteres') :  null;
+            $cabins = $request->post('cabins') ? $request->post('cabins') :  null; 
+            
         }
         $args = $request->post('args') ? $request->post('args') : array();
+        $args['cabins'] = $cabins; //var_dump($cabins); return;
         if (isset($args["order_by"])) {
             $orderBy   = intval($args["order_by"]);
             $ascOrDesc = isset($args["desc"]) ? intval($args["desc"]) : 0;
@@ -190,10 +194,10 @@ class BookingController extends \yii\web\Controller
                 if (is_array($notCategories) && count($notCategories) > 0) {
                     $yachtCategories = YachtCategory::find()->where(['xml_id' => $xml->id])->all();
                     $yacht_categories = [];
-                    if (is_array($yachtCategories) &&  count($yachtCategories) > 0) {
+                    if (is_array($yachtCategories) && count($yachtCategories) > 0) {
                         foreach ($yachtCategories as $category) {
                             if (!in_array($category->xml_json_id, $notCategories))
-                                $yacht_categories[] = $category->xml_json_id;
+                                $yacht_categories[] = $category->name;
                         }
                         $lists['yacht_categories'] = $yacht_categories;
                     }
@@ -262,15 +266,10 @@ class BookingController extends \yii\web\Controller
                     $args['selectedServiceTypes'] = $serviceType->service_types;
             }
             if (is_array($selectedCategories)) {
-                $yachtCategories = YachtCategory::find()->where(["name" => $selectedCategories, 'xml_id' => $xml->id])->all();
-                $yacht_categories = [];
-                if (is_array($yachtCategories) &&  count($yachtCategories) > 0) {
-                    foreach ($yachtCategories as $category)
-                        $yacht_categories[] = $category->xml_json_id;
-
-                    $lists['yacht_categories'] = $yacht_categories;
-                }
-            }
+                //$yachtCategories = $selectedCategories;
+                $yacht_categories = $selectedCategories;
+                $lists['yacht_categories'] = $yacht_categories;
+             }
             $lists['args'] = $args;
             if (is_array($dest_ids) && count($dest_ids) > 0 && is_array($lists['ports']) && count($lists['ports']) > 0) { //echo "hello";
                 $booking1 = $bookingClasses::freeYachtsSearch2($date_from, $duration, $flexibility, $lists, $xml->id, $is_sale, $orderBy, $ascOrDesc);

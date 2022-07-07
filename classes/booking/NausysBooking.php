@@ -14,6 +14,7 @@ use app\models\Cities;
 use app\models\YachtCategory;
 use app\models\YachtDatas1;
 use app\models\Cash;
+use app\models\YachtCash;
 use app\models\StandardEquipment;
 use app\models\YachtModel;
 use app\classes\yacht\NausysYacht;
@@ -603,7 +604,7 @@ class NausysBooking extends Booking
 
         return $objList2;
     }
-    private static function sorterDatas($list, $xml_id, $Ids, $order, $offset = 0)
+    /*     private static function sorterDatas($list, $xml_id, $Ids, $order, $offset = 0)
     { //($offset); 
         $list2 = []; //($Ids);
         if (count($Ids) > 0 && is_array($order) && count($order) > 0) {
@@ -688,7 +689,7 @@ class NausysBooking extends Booking
             }
         }
         return ['list' => $list2, 'Ids' => $Ids2];
-    }
+    } */
 
     private static function arrayMerge($obj1, $obj2, $xml_id, $orderBy = 2, $ascOrDesc = 0)
     {
@@ -843,205 +844,121 @@ class NausysBooking extends Booking
         }
 
         $Obj = array('list' => [], 'Ids' => [], 'count' => null);
-        $page2 = $page;
-        $order = [];
-        if ($orderBy > 2) {
-            $order = [
-                'orderby' => $orderBy,
-                'desc'    => $ascOrDesc
-            ];
-        }
-
+        
         foreach ($authAndPostFields as $auth) {
-
             $date_from_ = $auth;
             if (!$date_from_) {
                 return ['list' => [], 'count' => null];
             }
             $date_from_ = date('Y-m-d', strtotime($date_from_));
-            $returnCount = 0;
-            $prevReturnCount = 0;
-            $cash = Cash::findOne(['from_date' => $date_from_, 'duration' => $duration]);
-            if ($cash) {
-                $Obj = json_decode($cash->json_value, true);
-                //$Obj = self::arrayMerge($Obj, $obj, $xml_id, $orderBy, $ascOrDesc); //($Obj['Ids']);//($Obj['list']);
-                $prevReturnCount = $returnCount;
-                $returnCount     = count($Obj['list']);
-            } else {
-                $Obj = ['list' => [], 'Ids' => [], 'count' => null];
-            }
-            // Destination (azaz port szerinti) --pipa
+            // 7 napos periodus
+            $yachtCashes = YachtCash::find()->where(["xml_id" => $xml_id, "date_from" => $date_from_]);
             if (is_array($ports)) {
-                foreach ($Obj['list'] as $key => $Obj_) {
-                    if (!in_array($Obj_['location_id'], $ports)) {
-                        unset($Obj['list'][$key]);
-                    }
-                }
-                $Obj['count'] = count($Obj['list']);
+                $yachtCashes->andWhere(["location_id" => $ports]);
             }
-            // Yacht Categories szerinti szűrés --pipa
-            if (is_array($attributes['yacht_categories']) && $Obj['count'] && $Obj['count'] > 0) {
-                $yachtModels = YachtModel::find()->where(['xml_id' => $xml_id, 'category_xml_id' => $attributes['yacht_categories']])->all();
-                if (is_array($yachtModels) && count($yachtModels) != YachtModel::find()->where('xml_id = ' . $xml_id)->count()) {
-                    $yachtModelIds = [];
-                    foreach ($yachtModels as $yachtModel) {
-                        $yachtModelIds[] = $yachtModel->xml_json_id;
-                    }
-
-                    $Obj['Ids'] = [];
-                    foreach ($Obj['list'] as $elem) {
-                        $Obj['Ids'][] = $elem['id'];
-                    }
-
-                    $yachts = Yacht::find()->where(['id' => $Obj['Ids']])->andWhere(['yacht_model_id' => $yachtModelIds])->all();
-                    $Ids = [];
-                    foreach ($yachts as $yacht) {
-                        $Ids[] = $yacht->id;
-                    }
-                    $Obj['Ids'] = $Ids;
-                    foreach ($Obj['list'] as $key => $Obj_) {
-                        if (!in_array($Obj_['id'], $Ids)) {
-                            unset($Obj['list'][$key]);
-                        }
-                    }
-                    $Obj['count'] =count($Obj['list']);
-                }
+            //Model szerinti szűrés ha van
+            if (isset($attributes['args']['models']) && $attributes['args']['models'] != '-') {
+                $yachtCashes->andWhere(["model" => $attributes['args']['models']]);
             }
-            // Length szerinti szűrés --pipa
-            if ($Obj['count'] && $Obj['count'] > 0) {
-                $maxLength = YachtModel::find()->max('loa');
-                $maxLength = isset($maxLength) ? $maxLength : '0';
-                $minLength = isset($attributes['args']['minLength']) ? $attributes['args']['minLength'] : 0;
-                $maxLength = isset($attributes['args']['maxLength']) ? $attributes['args']['maxLength'] : $maxLength;
-                $yachtModels = YachtModel::find()->where('xml_id = ' . $xml_id . ' and loa >= ' . $minLength . ' and loa <= ' . $maxLength)->all();
-                if (count($yachtModels) < YachtModel::find()->where('xml_id = ' . $xml_id)->count()) {
-                    $yachtModelIds = [];
-                    foreach ($yachtModels as $yachtModel) {
-                        $yachtModelIds[] = $yachtModel->xml_json_id;
-                    }
-                    $yachts = Yacht::find()->where(['id' => $Obj['Ids']])->andWhere(['yacht_model_id' => $yachtModelIds])->all();
-                    $Obj['Ids'] = [];
-                    foreach ($Obj['list'] as $elem) {
-                        $Obj['Ids'][] = $elem['id'];
-                    }
-                    foreach ($yachts as $yacht) {
-                        $Ids[] = $yacht->id;
-                    }
-                    $Obj['Ids'] = $Ids;
-                    foreach ($Obj['list'] as $key => $Obj_) {
-                        if (!in_array($Obj_['id'], $Ids)) {
-                            unset($Obj['list'][$key]);
-                        }
-                    }
-                    $Obj['count'] = count($Obj['list']);
-                }
-            }
-            // Ágyak szűrése ha vanif (isset($args['minBerth']) && $args['minBerth'] > 0){
 
-            if ($Obj['count'] && $Obj['count'] > 0 && isset($attributes['args']['minBerth']) || isset($attributes['args']['maxBerth'])) {
+            if (is_array($attributes['yacht_categories']) && count($attributes['yacht_categories']) > 0) {
+                $yachtCategories = $attributes['yacht_categories'];
+                $yachtCashes->andWhere(["category" => $yachtCategories]);
+            }
+            if (isset($attributes['args']['minBerth']) || isset($attributes['args']['maxBerth'])) {
                 $minBerths = isset($attributes['args']['minBerth']) ? (intval($attributes['args']['minBerth'])) : 0;
                 $maxBerths = isset($attributes['args']['maxBerth']) ? intval($attributes['args']['maxBerth']) : -1;
+                $yachtCashes->andWhere("beds >= {$minBerths}");
+                if ($maxBerths>-1){
+                    $yachtCashes->andWhere("beds <= {$maxBerths}");
+                }
+            }
+            if (isset($attributes['args']['minLength']) || isset($attributes['args']['maxLength'])) {
+                $minLength = isset($attributes['args']['minLength']) ? (intval($attributes['args']['minLength'])) : 0;
+                $maxLength = isset($attributes['args']['maxLength']) ? intval($attributes['args']['maxLength']) : -1;
+                $yachtCashes->andWhere("length >= {$minLength}");
+                if ($maxBerths>-1){
+                    $yachtCashes->andWhere("length <= {$maxLength}");
+                }
+            }
+            if (isset($attributes['args']['cabins'])) { //} && is_array($attributes['args']['cabins']) && count($attributes['args']['cabins']) > 0) {
+                $where = "( 0 or ";
+                foreach ($attributes['args']['cabins'] as $cabinNum) {
+                    if ($cabinNum != '6+')
+                        $where .= "cabins = {$cabinNum} or ";
+                    else 
+                        $where .= "cabins >= 6 or ";
+                }
+                $where = trim($where, "or ").")"; // var_dump($where);
+                $yachtCashes->andWhere($where);
+            }
 
-                $Obj = parent::boats_berths($Obj, $minBerths, $maxBerths);
-                $Obj['count'] =count($Obj['list']);
-            }
-            // Model szerinti szűrés ha van
-            if ($Obj['count'] && $Obj['count'] > 0 && isset($attributes['args']['models']) && $attributes['args']['models'] != '-') {
-                $Obj = parent::boats_models($attributes['args']['models'], $Obj);
-                $Obj['count'] =count($Obj['list']);
-            }
             $returnCount = count($Obj['list']); // ($Obj);
-            // Optional extras szerinti szűrés ha van
+            //Optional extras szerinti szűrés ha van
             // lefejlesztve NAUSYS Bareboat or creawed De a Cabin Flottilla Powered Berth All incluive nincs lefejlesztve!!!!
+           /*
             if (isset($attributes['args']['selectedServiceTypes']) && $attributes['args']['selectedServiceTypes'] != "All") { // (isset($attributes['args']['selectedServiceTypes']);
                 $Obj = parent::search_boats_with_service_types($attributes['args']['selectedServiceTypes'], $Obj);
-                $Obj['count'] =count($Obj['list']);
             }
-            // Equipments
+            */
+             
+            $Obj['count'] = $yachtCashes->count();
+            $yachtCashes->limit(self::RESULTS_PER_PAGE)->offset(($page - 1) * self::RESULTS_PER_PAGE);
+            switch ($orderBy) {
 
-            if ($Obj['count'] && $Obj['count'] > 0 && 
-                is_array($attributes['feauteres'])
-                && count($attributes['feauteres']) > 0
-            ) {
-                $yachts = Yacht::findAll(['id' => $Obj['Ids'], 'xml_id' => $xml_id]);
-                $yacht_ids = [];
-                if (is_array($yachts)) {
-                    foreach ($yachts as $yacht) {
-                        $yacht_ids[] = $yacht->xml_json_id;
-                    }
-                }
-                foreach ($attributes['feauteres'] as $equipment) {
-                    if (count($yacht_ids) == 0) {
-                        break;
-                    }
-                    $equipmentIds = parent::boats_feautere_ids($equipment, $xml_id);
-                    $standardEquipments = StandardEquipment::find()->where(['xml_id' => $xml_id, 'yacht_id' => $yacht_ids, 'equipment_id' => $equipmentIds])->all();
-                    if (is_array($standardEquipments)) {
-                        $yacht_ids = [];
-                        foreach ($standardEquipments as $standardEquipment) {
-                            $yacht_ids[] = $standardEquipment->yacht_id;
-                        }
-                    }
-                }
-                if (count($yacht_ids) == 0) {
-                    return ['list' => [], 'count' => 0];
-                } else {
-                    $yachts = Yacht::findAll(['xml_id' => $xml_id, 'xml_json_id' => $yacht_ids]);
-                    $Ids    = [];
-                    $list   = $Obj['list'];
-                    foreach ($yachts as $yacht) {
-                        $Ids[] = $yacht->id;
-                    }
-                    $Obj['Ids']  = $Ids;
+                case 2:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['user_price' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['user_price' => SORT_DESC]);
 
-                    foreach ($list as $key => $yacht) {
-                        if (!in_array($yacht['id'], $Ids)) {
-                            unset($list[$key]);
-                        }
-                    }
-                    $Obj['list'] = $list;
-                }
-            }
-            /*
-             */
-        }
-
-       
-        if ($page == 1) {
-            $count = is_array($Obj['list']) ? count($Obj['list']) : 0;
-        }
-
-        $offset = (($page - 1) * self::RESULTS_PER_PAGE);
-        if ($orderBy && $orderBy != 2) {
-            $Obj['Ids'] = [];
-            foreach ($Obj['list'] as $elem) {
-                $Obj['Ids'][] = $elem['id'];
-            }
-            $Obj = self::sorterDatas($Obj['list'], $xml_id, $Obj['Ids'], $order, $offset);
-        } else {
-
-            $objList3 = [];
-            $szorzo = $page - 1;
-            $index = 0;
-            $kezdoIndex    = ($szorzo * self::RESULTS_PER_PAGE);
-            $vegIndex = $kezdoIndex + self::RESULTS_PER_PAGE;
-
-            $index = 1;
-            foreach ($Obj["list"] as $elem) {
-                if ($index >= $kezdoIndex && $index < $vegIndex) {
-                    $objList3[] = $elem;
-                }
-                if ($index >= $vegIndex) {
                     break;
-                }
-                $index++;
+                case 3:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['length' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['length' => SORT_DESC]);
+
+                    break;
+                case 4:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['cabins' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['cabins' => SORT_DESC]);
+
+                    break;
+                case 5:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['builder_year' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['builder_year' => SORT_DESC]);
+
+                    break;
+                case 6:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['beds' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['beds' => SORT_DESC]);
+
+                    break;
+                case 7:
+                    if (!$ascOrDesc)
+                        $yachtCashes->orderBy(['capacity' => SORT_ASC]);
+                    else
+                        $yachtCashes->orderBy(['capacity' => SORT_DESC]);
+
+                    break;
+                default:
+                    $yachtCashes->orderBy(['user_price' => SORT_ASC]);
+                    break;
             }
-            // unset($Obj['list']);
-            $Obj["list"] = $objList3;
+            $yachtesFromCash = $yachtCashes->all();
+
+            foreach ($yachtesFromCash as $value) {
+                $Obj['list'][] = json_decode($value->json_value, true);
+            }
         }
-        unset($Obj['Ids']);
-        $next = 0; //($count); 
-        if ($page == 1) $Obj['count'] = $count;
+
         $Obj['perPage'] = self::RESULTS_PER_PAGE;
 
         return isset($Obj) ? $Obj : ['list' => [], 'count' => null];
