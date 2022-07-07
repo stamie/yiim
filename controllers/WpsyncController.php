@@ -64,7 +64,7 @@ class WpsyncController extends \yii\web\Controller
     }
 
     public function actionPictures()
-    { 
+    {
         $request = Yii::$app->request;
         $id = $request->get('id');
 
@@ -97,23 +97,24 @@ class WpsyncController extends \yii\web\Controller
         //$ids = json
         $return = [];
         $yachtForXmls = Yacht::findAll(['id' => $ids]);
-        if (is_array($yachtForXmls)){
-        foreach ($yachtForXmls as $yachtForXml) {
+        if (is_array($yachtForXmls)) {
+            foreach ($yachtForXmls as $yachtForXml) {
 
-            $dir = Yii::$app->getBasePath() . "/boat-{$yachtForXml->xml_id}/{$yachtForXml->id}";
-            $scanned_directory = array();
+                $dir = Yii::$app->getBasePath() . "/boat-{$yachtForXml->xml_id}/{$yachtForXml->id}";
+                $scanned_directory = array();
 
-            if (is_dir($dir))
-                $scanned_directory = array_diff(scandir($dir), array('..', '.'));
+                if (is_dir($dir))
+                    $scanned_directory = array_diff(scandir($dir), array('..', '.'));
 
-            $picture = '';
-            foreach ($scanned_directory as $file) {
-                if (is_file($dir . '/' . $file) && strpos($file, 'main') > 0) {
-                    $picture = str_replace('Boat', $yachtForXml->wp_name, 'src="' . str_replace('/web', '', Url::base(1)) . '/boat-' . $yachtForXml->xml_id . '/' . $yachtForXml->id . '/' . $file . '" class="thumbnail" alt="Boat" title="Boat" style="height:100%;display: block; margin-left: auto; margin-right: auto;"');
+                $picture = '';
+                foreach ($scanned_directory as $file) {
+                    if (is_file($dir . '/' . $file) && strpos($file, 'main') > 0) {
+                        $picture = str_replace('Boat', $yachtForXml->wp_name, 'src="' . str_replace('/web', '', Url::base(1)) . '/boat-' . $yachtForXml->xml_id . '/' . $yachtForXml->id . '/' . $file . '" class="thumbnail" alt="Boat" title="Boat" style="height:100%;display: block; margin-left: auto; margin-right: auto;"');
+                    }
+                    $return[$yachtForXml->id] = $picture;
                 }
-                $return[$yachtForXml->id] = $picture;
             }
-        }}
+        }
         $return = json_encode($return);
         echo $return;
     }
@@ -136,10 +137,10 @@ class WpsyncController extends \yii\web\Controller
                     $string = $hrefLang->meta_value;
                     $pos1   = strpos($string, self::$languages[$lang]['code']);
                     $pos2   = strpos($string, self::$languages[($lang + 1)]['code']);
-                    
+
                     $string = substr($string, 0, $pos1) . str_replace($searchUrl, $replaceUrl, substr($string, $pos1, ($pos2 - $pos1))) . substr($string, $pos2);
-                    
-                    
+
+
                     $hrefLang->meta_value = $string;
                     $hrefLang->save(0);
                 }
