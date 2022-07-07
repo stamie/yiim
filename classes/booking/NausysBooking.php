@@ -376,10 +376,7 @@ class NausysBooking extends Booking
         $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
         return $authAndPostFields;
     }
-    private static function inWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
-    {
-        return self::oneWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page);
-    }
+
 
     private static function oneWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
     {
@@ -523,6 +520,7 @@ class NausysBooking extends Booking
         return $objList2;
     }
 
+
     private static function arrayMerge($obj1, $obj2, $xml_id, $orderBy = 2, $ascOrDesc = 0)
     {
         $objList = $obj1['list'];
@@ -554,30 +552,7 @@ class NausysBooking extends Booking
         $authAndPostFields = [];
         $page = 1;
         $resultsPerPage = count(Yacht::find()->all()) + 100000;
-        switch ($flexibility) {
-            case 'on_day':
-                $authAndPostFields[] = self::onDay($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            case "on_week":
-                $authAndPostFields = self::onWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            case "in_week":
-                $authAndPostFields = self::inWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            case "one_week":
-                $authAndPostFields = self::oneWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            case "two_weeks":
-                $authAndPostFields = self::twoWeeks($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            case "in_month":
-                $authAndPostFields = self::inMonth($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-            default:
-                $authAndPostFields[] = self::onDay($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
-                break;
-        }
-
+  
         $Obj = array('list' => [], 'Ids' => [], 'count' => null);
         $order = [];
         if ($orderBy > 2) {
@@ -587,6 +562,7 @@ class NausysBooking extends Booking
             ];
         }
         $page2 = $page;
+        $authAndPostFields[] = self::onDay($from, $to, $attributes, $orderBy, $ascOrDesc, $page, $resultsPerPage);
         foreach ($authAndPostFields as $auth) {
             $returnCount = 0;
             $prevReturnCount = 0;
