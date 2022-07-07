@@ -25,13 +25,7 @@ use LiteSpeed\Data;
 
 class NausysBooking extends Booking
 {
-    /*
-    const RESULTS_PER_PAGE = 50;
-    const DAY_MINUTE = 86400;
-    const YEAR_DAY   = 365;
-    const MAX_PAGE   = 2;
-    const START_FROM = 4;
-*/
+
     private static $freeYachtsSearcUrl = 'http://ws.nausys.com/CBMS-external/rest/yachtReservation/v6/freeYachtsSearch';
     private static $freeYachtsUrl      = 'http://ws.nausys.com/CBMS-external/rest/yachtReservation/v6/freeYachts';
     private static $createClient       = 'http://ws.nausys.com/CBMS-external/rest/booking/v6/createInfo/';
@@ -258,82 +252,6 @@ class NausysBooking extends Booking
         }
 
         return ['list' => $list, 'Ids' => $Ids];
-    }
-    private static function oneDay($from, $to, $attributes, $orderBy = 2, $ascOrDesc = 0, $page = 1, $resultsPerPage = self::RESULTS_PER_PAGE)
-    {
-        $cred   = new Nausys();
-        $ports = [];
-        $countries = [];
-        $yachtCategories = []; // lefejlesztve NAUSYS
-        $args = isset($attributes['args']) ? $attributes['args'] : [];
-        $equipments_ids = [];
-        if (
-            isset($args['feauteres'])
-            && is_array($args['feauteres'])
-            && count($args['feauteres']) > 0
-        ) {
-            $equipments_ids = parent::boats_feauteres_ids($args['feauteres'], 1);
-            if (is_array($equipments_ids) && count($equipments_ids) > 0) {
-                $equipments_ids = ['equipments' => $equipments_ids];
-            }
-        }
-        $minLength = isset($args['minLength']) ? ['lengthFrom' => round(floatval($args['minLength']))] : [];
-        $maxLength = isset($args['maxLength']) ? ['lengthTo'   => round(floatval($args['maxLength']))] : [];
-        $cabins = [];
-        if (isset($args['cabins']) && is_array($args['cabins'])) {
-            foreach ($args['cabins'] as $cabin) {
-                if ($cabin == 6) {
-                    for ($number = 6; $number <= parent::max_cabins(); $number++) {
-                        $cabins[] = $number;
-                    }
-                } else {
-                    $cabins[] = $cabin;
-                }
-            }
-        }
-        if (count($cabins) > 0) {
-            $cabins = ['cabins' => $cabins];
-        }
-        $ignoreOptions = false;
-        if (is_array($attributes)) {
-            if (isset($attributes['ports']) && is_array($attributes['ports']) && count($attributes['ports']) > 0) {
-                $ports['locations'] = $attributes['ports'];
-            }
-            if (isset($attributes['countries']) && is_array($attributes['countries']) && count($attributes['countries']) > 0) {
-                $countries['countries'] = $attributes['countries'];
-            }
-            if (isset($attributes['yacht_categories']) && is_array($attributes['yacht_categories']) && count($attributes['yacht_categories']) > 0) {
-                $yachtCategories['yachtCategories'] = $attributes['yacht_categories'];
-            }
-            if (isset($attributes['ignoreOptions']) && $attributes['ignoreOptions'] == '1') {
-                $ignoreOptions = true;
-            }
-        }
-        $order = [];
-        if ($orderBy > 1 && $orderBy < 6) {
-            $order = [
-                'orderby' => $orderBy,
-                'desc'    => $ascOrDesc
-            ];
-        }
-        $resultsPerPage2 = 0;
-
-        $resultsPerPage2 = $resultsPerPage;
-
-        //   ($page);
-        //   ($resultsPerPage2);
-        $authAndPostFields = json_encode(
-            [
-                'credentials'    => $cred->getCredentials(),
-                'periodFrom'     => $from,
-                'periodTo'       => $to,
-                'resultsPerPage' => $resultsPerPage2,
-                'resultsPage'    => $page
-            ] + $ports + $countries + $equipments_ids + $minLength + $maxLength + $cabins
-                + $yachtCategories + $order + ['ignoreOptions' => $ignoreOptions]
-        );
-
-        return $authAndPostFields;
     }
 
     private static function onDay($from, $to, $attributes, $orderBy = 2, $ascOrDesc = 0, $page = 1, $resultsPerPage = self::RESULTS_PER_PAGE)
@@ -604,92 +522,6 @@ class NausysBooking extends Booking
 
         return $objList2;
     }
-    /*     private static function sorterDatas($list, $xml_id, $Ids, $order, $offset = 0)
-    { //($offset); 
-        $list2 = []; //($Ids);
-        if (count($Ids) > 0 && is_array($order) && count($order) > 0) {
-
-            $orderBy = isset($order['orderby']) ? $order['orderby'] : 0;
-            $desc    = isset($order['desc']) ? $order['desc'] : 0; //($desc);
-            $desc    = ($desc == 1 || $desc == "1") ? SORT_DESC : SORT_ASC;
-
-            $yachts  = null;
-            switch ($orderBy) { //3 - yacht length 4 - yacht cabins 5 - yacht build year
-                case 3:
-                    $query = new Query;
-                    // compose the query
-
-                    $yachts = Yacht::find()
-                        ->leftJoin('yacht_model', 'yacht_model.xml_id=yacht.xml_id and yacht_model.xml_json_id=yacht.yacht_model_id')
-                        ->where(['yacht.id' => $Ids])
-                        ->orderBy(['yacht_model.loa' => $desc])
-                        ->limit($offset + self::RESULTS_PER_PAGE)
-                        //->offset($offset)
-                        ->all();
-                    break;
-                case 4:
-                    $yachts = YachtDatas1::find()
-                        ->where(['id' => $Ids])
-                        ->orderBy(['cabins'  => $desc])
-                        ->limit($offset + self::RESULTS_PER_PAGE)
-                        //->offset($offset)
-                        ->all();
-                    break;
-                case 5:
-                    $yachts = Yacht::find()
-                        ->where(['id' => $Ids])
-                        ->orderBy(['build_year'  => $desc])
-                        ->limit($offset + self::RESULTS_PER_PAGE)
-                        //->offset($offset)
-                        ->all();
-                    break;
-                case 6: //berths
-                    $yachts = YachtDatas1::find()->where(['id' => $Ids])
-                        //->orderBy('(berths_cabin+berths_salon+berths_crew) ' . $desc)
-                        ->orderBy(['berths_total' => $desc])
-                        ->limit($offset + self::RESULTS_PER_PAGE)
-                        //->offset($offset)
-                        ->all();
-                    break;
-                case 7: //capacity
-                    $yachts = Yacht::find()
-                        ->where(['id' => $Ids])
-                        ->orderBy(['max_person'  => $desc])
-                        ->limit($offset + self::RESULTS_PER_PAGE)
-                        //->offset($offset)
-                        ->all();
-                    break;
-                default:
-                    echo "error";
-                    return;
-            }
-
-            $Ids2 = [];
-            if (is_array($yachts)) { //($yachts);
-                //$key = 0;
-                foreach ($yachts as $key => $yachtData) {
-                    //for ($key = ($offset+self::RESULTS_PER_PAGE); $key >=$offset;  $key--) {
-                    if ($key >= $offset && $key < $offset + self::RESULTS_PER_PAGE) {
-                        if (isset($yachtData["id"])) { //echo $key; ($yachtData["id"]);
-                            if (in_array(intval($yachtData["id"]), $Ids)) {
-                                $index = array_search(intval($yachtData["id"]), $Ids);
-                                $list2[] = $list[$index];
-                                $Ids2[]  = $yachtData["id"];
-                            }
-                        } else
-                        if (isset($yachtData->id)) { //echo $key; ($yachtData->id);
-                            if (in_array($yachtData->id, $Ids)) {
-                                $index = array_search($yachtData->id, $Ids);
-                                $list2[] = $list[$index];
-                                $Ids2[]  = $yachtData->id;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return ['list' => $list2, 'Ids' => $Ids2];
-    } */
 
     private static function arrayMerge($obj1, $obj2, $xml_id, $orderBy = 2, $ascOrDesc = 0)
     {
