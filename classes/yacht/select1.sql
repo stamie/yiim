@@ -1,0 +1,1 @@
+SELECT count(*), `yacht_id`, `season_id`, `discount_item_id`, `amount`, `type`, `xml_id` FROM `regular_discount` WHERE 1 group by `yacht_id`, `season_id`, `discount_item_id`, `amount`, `type`, `xml_id` having `count(*)`>1;
