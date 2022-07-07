@@ -18,7 +18,7 @@ class Booking
     const YEAR_DAY   = 365;
     const MAX_PAGE   = 2;
     const START_FROM = 4;
-    private static $equipmentsNausys = array(
+ /*   private static $equipmentsNausys = array(
         'air-conditioner' => [4],
         'watermaker' => [16],
         'generator' => [3],
@@ -34,6 +34,7 @@ class Booking
         'gps' => [24],
         'electric-winch' => [101704],
     );
+    */
     private static $optionalExtras = array(
         'nausys' => array(
             'Cabin'         => array('Cabin conversion', 'Cabin kit', 'Conversion of two separate cabins into one', 'Extra charge for the superior cabin'),
@@ -44,112 +45,6 @@ class Booking
             'AllInclusive'  => array('All inclusive', 'All inclusive alcoholic package', 'All inclusive children', 'All inclusive domestic non alcoholic package', 'All inclusive domestic package', 'All inclusive package', 'All inclusive surcharge for two/more weeks'),
         ),
     );
-
-    protected function boats_services($selectedServiceNames)
-    {
-        return array();
-    }
-
-    protected function boats_feauteres_ids($feauteres = array(), $xml_id)
-    {
-        $return = array();
-        if (is_array($feauteres)) {
-            foreach ($feauteres as $feauter) {
-                if (isset(self::$equipmentsNausys[$feauter])) {
-                    $return = array_merge($return, self::$equipmentsNausys[$feauter]);
-                }
-            }
-        }
-        return $return;
-    }
-    protected function boats_feautere_ids($feauter, $xml_id)
-    {
-        $return = array();
-        if (isset($feauter)) {
-            if (isset(self::$equipmentsNausys[$feauter])) {
-                $return = array_merge($return, self::$equipmentsNausys[$feauter]);
-            }
-        }
-        return $return;
-    }
-    protected function max_cabins()
-    {
-        $number = YachtModel::find()->orderBy(['cabins' => SORT_DESC])->one();
-        $number = isset($number) ? $number->cabins : null;
-        return $number;
-    }
-
-    protected function boats_models($models = '-', $boatList = array())
-    { // $models);
-        $boatList2 = isset($boatList["Ids"]) ? $boatList["Ids"] : [];
-        $lists = ["list" => array(), "Ids" => array()];
-        $Ids  = [];
-        $list = [];
-
-        if (isset($models) && $models != '-' && is_array($boatList2) && count($boatList2) > 0) {
-            $lists = array();
-            $whereBoats = ' y.id in (' . implode(', ', $boatList2) . ') ';
-            $whereModel = "upper(name) like upper('$models')";
-            $yachtModel = YachtModel::find()->where($whereModel)->all();
-
-            if (is_array($yachtModel)) {
-                foreach ($yachtModel as $model) {
-                    $rows = Yacht::find()->where(["id" => $boatList2, 'yacht_model_id' => $model->xml_json_id, 'xml_id' => $model->xml_id])->all();
-
-                    if (is_array($rows)) {
-                        foreach ($rows as $row) {
-                            $Ids[] = $row->id; //($row->ID);exit("ide nem jön");
-                        }
-                    }
-                }
-            }
-        }
-        if (is_array($boatList["list"])) {
-            foreach ($boatList["list"] as $obj) { //$obj);
-                if (is_array($Ids) && in_array($obj['id'], $Ids)) {
-                    $list[] = $obj;
-                }
-            }
-        }
-
-        $lists['Ids']  = $Ids;
-        $lists['list'] = $list;
-        return $lists;
-    }
-    protected function boats_berths($Obj, $minBerths = 0, $maxBerths = -1)
-    {
-        $Ids = isset($Obj["Ids"]) ? $Obj["Ids"] : null;
-        if (is_array($Ids) && count($Ids) > 0) {
-
-
-            $yachtDatas1 = YachtDatas1::find()->where(['id' => $Ids]);
-            if ($minBerths > 0)
-                $yachtDatas1->andWhere('berths_total >= ' . $minBerths);
-            if ($maxBerths > -1)
-                $yachtDatas1->andWhere('berths_total <= ' . $maxBerths);
-
-            $yachts = $yachtDatas1->all();
-
-            $Ids = [];
-            $list = [];
-            if (is_array($yachts) && count($yachts) > 0) {
-
-                foreach ($yachts as $yacht) {
-                    $Ids[] = $yacht->id;
-                }
-
-                if (is_array($Obj["list"])) {
-                    foreach ($Obj["list"] as $obj) { //$obj);
-                        if (is_array($Ids) && in_array($obj['id'], $Ids)) {
-                            $list[] = $obj;
-                        }
-                    }
-                }
-            }
-            return ["list" => $list, "Ids" => $Ids];
-        }
-        return ["list" => [], "Ids" => []];
-    }
 
     protected function search_boats_with_service_types(string $service_types, $Obj)
     {
