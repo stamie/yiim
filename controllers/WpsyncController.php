@@ -37,7 +37,7 @@ class WpsyncController extends \yii\web\Controller
         $prefix = '';
         if ($tablePrefix && $ret) {
             $prefix = $tablePrefix->prefix;
-            //exit('cica');
+            
             return $this->render('index', ['pr' => $prefix, 'prId' => $id, 'ret' => $ret]);
         }
 
@@ -50,7 +50,7 @@ class WpsyncController extends \yii\web\Controller
         $prefix = '';
         if ($tablePrefix && $ret) {
             $prefix = $tablePrefix->prefix;
-            //exit('cica');
+            
             return $this->render('index', ['pr' => $prefix, 'prId' => $id, 'ret' => $ret]);
         }
 
@@ -58,7 +58,6 @@ class WpsyncController extends \yii\web\Controller
     }
     public function deleteOldYachtPosts()
     {
-
         foreach (TablePrefix::find()->all() as $id)
             Wpsync::deleteOldYachtPosts($id);
     }
@@ -115,8 +114,7 @@ class WpsyncController extends \yii\web\Controller
                 }
             }
         }
-        $return = json_encode($return);
-        echo $return;
+        echo json_encode($return);
     }
 
     public function actionHreflang()
@@ -128,7 +126,6 @@ class WpsyncController extends \yii\web\Controller
         $replaceUrl = $request->get('replace_url') ? $request->get('replace_url') : '';
         $url = BaseUrl::base() . '/wpsync/hreflang';
         $tablePrefixes = TablePrefix::find()->all();
-        $return = 0;
         if ($prId && $lang && $lang < count(self::$languages)) {
             $hrefLangs = Postmeta::find()->where("meta_value like '%" . self::$languages[$lang]['code'] . "%" . self::$languages[($lang + 1)]['code'] . "%'")->all();
 

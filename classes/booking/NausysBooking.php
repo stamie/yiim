@@ -37,31 +37,24 @@ class NausysBooking extends Booking
 
         $day = intval(getdate($from)['wday']);
         if ($day === 1 && $checkInPeriod->check_in_monday === 1) {
-            //
             return 1;
         }
         if ($day === 2 && $checkInPeriod->check_in_tuesday === 1) {
-
             return 1;
         }
         if ($day === 3 && $checkInPeriod->check_in_wednesday === 1) {
-            //;
             return 1;
         }
         if ($day === 4 && $checkInPeriod->check_in_thursday === 1) {
-
             return 1;
         }
         if ($day === 5 && $checkInPeriod->check_in_friday === 1) {
-
             return 1;
         }
         if ($day === 6 && $checkInPeriod->check_in_saturday === 1) {
-
             return 1;
         }
         if ($day === 0 && $checkInPeriod->check_in_sunday === 1) {
-
             return 1;
         }
         return 0;
@@ -170,7 +163,6 @@ class NausysBooking extends Booking
         $exec = curl_exec($ch);
         curl_close($ch);
         $exec = json_decode($exec);
-        //$obj = array();
         if ($exec->status == 'OK') {
 
             return $exec;
@@ -178,10 +170,9 @@ class NausysBooking extends Booking
         return null;
     }
 
-    private static function convertYachtList($obj, $xml_id, $is_sale, $order = [])
+    private static function convertYachtList($obj, $xml_id, $is_sale, $order = []) //Order nem biztos hogy kell
     {
         $list = [];
-        $list2 = [];
         $Ids  = [];
         if (is_array($obj)) {
             foreach ($obj as $yacht) {
@@ -322,8 +313,6 @@ class NausysBooking extends Booking
         } else {
             $resultsPerPage2 = ($page) * $resultsPerPage;
         }
-        //   ($page);
-        //   ($resultsPerPage2);
         $authAndPostFields = json_encode(
             [
                 'credentials'    => $cred->getCredentials(),
@@ -338,160 +327,6 @@ class NausysBooking extends Booking
         return $authAndPostFields;
     }
 
-    private static function onWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
-    {
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $now       = strtotime('now');
-        $authAndPostFields = [];
-        $from2     = $from;
-        $to2       = $to;
-        $date_from_day = date('N', $date_from);
-        while ($date_from_day > 1 && $date_from >= $now) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   -= self::DAY_MINUTE;
-            $date_from -= self::DAY_MINUTE;
-            $date_from_day = date('N', $date_from);
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-        }
-        $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $date_to   += self::DAY_MINUTE;
-        $date_from += self::DAY_MINUTE;
-        $now       = strtotime('now');
-        $to2 = date("d.m.Y", $date_to);
-        $from2 = date("d.m.Y", $date_from);
-        $date_from_day = date('N', $date_from);
-        while ($date_from_day < 7) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   += self::DAY_MINUTE;
-            $date_from += self::DAY_MINUTE;
-            $date_from_day = date('N', $date_from);
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-        }
-        $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-        return $authAndPostFields;
-    }
-
-
-    private static function oneWeek($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
-    {
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $now       = strtotime('now');
-        $authAndPostFields = [];
-        $from2     = $from;
-        $to2       = $to;
-        $index = 0;
-        while ($index < 7 && $date_from >= $now) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   -= self::DAY_MINUTE;
-            $date_from -= self::DAY_MINUTE;
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-            $index++;
-        }
-
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $date_to   += self::DAY_MINUTE;
-        $date_from += self::DAY_MINUTE;
-        $now       = strtotime('now');
-        $to2 = date("d.m.Y", $date_to);
-        $from2 = date("d.m.Y", $date_from);
-        $index = 0;
-        while ($index < 7) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   += self::DAY_MINUTE;
-            $date_from += self::DAY_MINUTE;
-
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-            $index++;
-        }
-        return $authAndPostFields;
-    }
-    private static function twoWeeks($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
-    {
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $now       = strtotime('now');
-        $authAndPostFields = [];
-        $from2     = $from;
-        $to2       = $to;
-        $index = 0;
-        while ($index < 14 && $date_from >= $now) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   -= self::DAY_MINUTE;
-            $date_from -= self::DAY_MINUTE;
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-            $index++;
-        }
-
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $date_to   += self::DAY_MINUTE;
-        $date_from += self::DAY_MINUTE;
-        $now       = strtotime('now');
-        $to2 = date("d.m.Y", $date_to);
-        $from2 = date("d.m.Y", $date_from);
-        $index = 0;
-        while ($index < 14) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   += self::DAY_MINUTE;
-            $date_from += self::DAY_MINUTE;
-
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-            $index++;
-        }
-
-
-        return $authAndPostFields;
-    }
-    private static function inMonth($from, $to, $attributes, $orderBy, $ascOrDesc, $page = 1)
-    {
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $now       = strtotime('now');
-        $authAndPostFields = [];
-        $from2     = $from;
-        $to2       = $to;
-        $date_from_day = date('j', $date_from);
-        while ($date_from_day > 1 && $date_from >= $now) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   -= self::DAY_MINUTE;
-            $date_from -= self::DAY_MINUTE;
-            $date_from_day = date('j', $date_from);
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-        }
-        $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-
-        $date_from = strtotime($from);
-        $date_to   = strtotime($to);
-        $date_to   += self::DAY_MINUTE;
-        $date_from += self::DAY_MINUTE;
-        $now       = strtotime('now');
-        $to2 = date("d.m.Y", $date_to);
-        $from2 = date("d.m.Y", $date_from);
-        $date_from_day = date('j', $date_from);
-        while ($date_from_day > 1) {
-            $authAndPostFields[] = self::onDay($from2, $to2, $attributes, $orderBy, $ascOrDesc, $page);
-            $date_to   += self::DAY_MINUTE;
-            $date_from += self::DAY_MINUTE;
-            $date_from_day = date('j', $date_from);
-            $to2 = date("d.m.Y", $date_to);
-            $from2 = date("d.m.Y", $date_from);
-        }
-
-        return $authAndPostFields;
-    }
     private static function arrayInsert($original, $inserted, $pos)
     {
         $or = $original;
