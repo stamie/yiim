@@ -71,40 +71,28 @@ class YachtCategorySync {
 
 
         if ($this) {
-
             $condition = [
                 
                 'xml_id' => $this->xml_id,
                 'xml_json_id' => $this->xml_json_id,
 
             ];
-
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
-
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
-                
-                
-                
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
                 $object->name = $this->name;
                 $object->is_active = 1;
                 if($object->save()) {
-
                     DestinationYachtCategory::refreshTable($object->id, $object->wp_prefix);
                     return $object;
                 }                
             }
-
-            return false;
         }
-
         return false;
     }
 

@@ -56,8 +56,6 @@ class CountrySync {
     }
 
     public function syncCountry () {
-
-
         if ($this) {
 
             $condition = [
@@ -85,12 +83,8 @@ class CountrySync {
                 $country->is_active = $this->is_active;
 
                 return $country->save();
-                return 1;
             }
-
-            return false;
         }
-
         return false;
     }
 

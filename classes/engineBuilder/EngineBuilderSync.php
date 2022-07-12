@@ -81,9 +81,7 @@ class EngineBuilderSync {
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
                 
@@ -98,7 +96,7 @@ class EngineBuilderSync {
                 
             }
 
-            return false;
+
         }
 
         return false;

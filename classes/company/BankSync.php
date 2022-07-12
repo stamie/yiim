@@ -95,7 +95,7 @@ class BankSync {
                 $object->is_active = 1;
                 //$object->save();
                 
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
                 
@@ -108,14 +108,11 @@ class BankSync {
                 $object->account_number = $this->account_number;
                 $object->swift = $this->swift;
                 $object->iban = $this->iban;
-
-                
-                
                 return $object->save();
                 
             }
 
-            return false;
+
         }
 
         return false;

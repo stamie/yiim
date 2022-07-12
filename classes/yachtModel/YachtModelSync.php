@@ -14,8 +14,6 @@ class YachtModelSync {
     protected $xml_json_id;
     protected $name;
     protected $is_active;
-
-
     protected $category_xml_id;
     protected $builder_xml_id;
     protected $loa;
@@ -46,14 +44,10 @@ class YachtModelSync {
     )
     {
         $this->id = $ID;
-        
-        
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
         $this->name = $name_;
         $this->is_active = intval($isActive);
-
-
         $this->category_xml_id = $category_xml_id_;
         $this->builder_xml_id = $builder_xml_id_;
         $this->loa = $loa;
@@ -64,8 +58,6 @@ class YachtModelSync {
         $this->water_tank = $water_tank;
         $this->fuel_tank = $fuel_tank;
         $this->displacemen = $displacemen;
-        
-
     }
 
     public function getId (){
@@ -102,34 +94,23 @@ class YachtModelSync {
     
      
     public function sync () {
-
-
         if ($this) {
-
             $this->condition = [
                 
                 'xml_id' => $this->xml_id,
                 'xml_json_id' => $this->xml_json_id,
 
             ];
-
             $object = self::$model::findOne($this->condition);
             if ($object){
                 $object->is_active = 1;
-                 
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
-                
-                
-                
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
                 $object->name = $this->name;
                 $object->is_active = 1;
-
                 $object->category_xml_id = $this->category_xml_id;
                 $object->builder_xml_id = $this->builder_xml_id;
                 $object->loa = $this->loa;
@@ -140,14 +121,9 @@ class YachtModelSync {
                 $object->water_tank = $this->water_tank;
                 $object->fuel_tank = $this->fuel_tank;
                 $object->displacement = $this->displacemen;
-
                 return $object->save();
-                
             }
-
-            return false;
         }
-
         return false;
     }
 

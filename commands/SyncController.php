@@ -167,7 +167,6 @@ class SyncController extends Controller
             }
         }
         $end_date = date('Y-m-d H:i:s');
-
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -221,14 +220,10 @@ class SyncController extends Controller
         $view = 'equipmentcategory';
         $className = 'EquipmentCategory';
         $dirName = 'equipmentCategory';
-
-
         if ($tablePrefix) {
             $prefix = $tablePrefix->prefix;
             $prId = $tablePrefix->id;
-
             $xmls = Xml::find()->all();
-
             foreach ($xmls as $xml) {
 
                 $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
@@ -250,7 +245,6 @@ class SyncController extends Controller
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Builder Syncron', $this->parentLogId);
-
         $tablePrefix = TablePrefix::findOne($id);
         $prefix = '';
         $prId = 0;
@@ -258,16 +252,11 @@ class SyncController extends Controller
         $view = 'yachtbuilder';
         $className = 'YachtBuilder';
         $dirName = 'yachtBuilder';
-
-
         if ($tablePrefix) {
             $prefix = $tablePrefix->prefix;
             $prId = $tablePrefix->id;
-
             $xmls = Xml::find()->all();
-
             foreach ($xmls as $xml) {
-
                 $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
                 $returnObj = $class::syncronise($prId);
                 $return = $return && $returnObj;
@@ -438,9 +427,7 @@ class SyncController extends Controller
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'OK';
             $cashLog->save(0);
-
             return ExitCode::OK;
-            return (($exit) ? ExitCode::OK : 1);
         }
         $d = date('Y-m-d H:i:s');
         $cashLog->end_datetime = $d;
@@ -515,7 +502,6 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
     }
 
     /**
@@ -543,7 +529,7 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
+        
     }
     /**
      *
@@ -570,7 +556,7 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
+        
     }
     /*
     * ### Yachtok szinkronja (XX)
@@ -596,7 +582,7 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
+        
     }
     /*
     * ### Yachtok szinkronja (XX)
@@ -622,7 +608,7 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
+        
     }
     /**
      *
@@ -653,7 +639,7 @@ class SyncController extends Controller
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        return (($exit) ? ExitCode::OK : 1);
+        
     }
     /**
      *

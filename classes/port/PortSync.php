@@ -111,37 +111,21 @@ class PortSync {
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
-  
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
-                
-                
-                
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
                 $object->name = $this->name;
                 $object->is_active = 1;
-
                 $object->region_id = $this->region_id;
                 $object->xml_long = $this->xml_long;
                 $object->xml_lat = $this->xml_lat;
                 
                 return $object->save();
-
-                //var_dump($object);
-
-                
             }
-
-            return false;
         }
-
         return false;
     }
 
 }
-
-?>

@@ -31,22 +31,15 @@ class SeasonSync {
         $date_to,
         $deafult_season = 1
     ) {
-
         $this->id = $ID;
-        
-        
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
         $this->season = $name_;
         $this->is_active = intval($isActive);
-        
         $this->charter_company_id = $charter_company_id;
         $this->date_from = $date_from;
         $this->date_to = $date_to;
         $this->deafult_season = $deafult_season;
-        
- 
-
     }
 
     public function getId (){
@@ -97,14 +90,9 @@ class SeasonSync {
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
-                
-                
-                
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
                 $object->season = $this->season;
@@ -112,11 +100,7 @@ class SeasonSync {
                 $object->date_from = $this->date_from;
                 $object->date_to = $this->date_to;
                 $object->deafult_season = $this->deafult_season;
-
                 $object->is_active = 1;
-
-                
-                
                 if ($object->save()){
                     return $object;
                 }
@@ -124,13 +108,9 @@ class SeasonSync {
                 return null;
                 
             }
-
-            return false;
         }
-
         return false;
     }
-
 }
 
 ?>

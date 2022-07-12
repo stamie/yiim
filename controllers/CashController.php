@@ -68,11 +68,6 @@ class CashController extends \yii\web\Controller
         $ascOrDesc = ($ascOrDesc < 2 && $ascOrDesc > -1) ? $ascOrDesc : 0;
         $ignoreOptions = $request->post('ignoreOptions') ? $request->post('ignoreOptions') : '0';
 
-        if (isset($args["order_by"])) {
-            $orderBy   = intval($args["order_by"]);
-            $ascOrDesc = isset($args["desc"]) ? intval($args["desc"]) : 0;
-        }
-
         $page_num = isset($args['page_num']) ? intval($args['page_num']) : 1;
         $lists = ['ports' => [], 'ignoreOptions' => $ignoreOptions, 'page_num' => $page_num];
 

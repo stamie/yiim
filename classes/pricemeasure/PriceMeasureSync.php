@@ -102,9 +102,7 @@ class PriceMeasureSync {
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
-                $object->save();
-                
-                return $object->save();
+                return $object->save(0);
             } else {
                 $object = new self::$model();
                 
@@ -123,8 +121,6 @@ class PriceMeasureSync {
                 var_dump($object); exit;
                 
             }
-
-            return false;
         }
 
         return false;

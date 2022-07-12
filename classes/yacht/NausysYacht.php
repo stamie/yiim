@@ -489,7 +489,6 @@ class NausysYacht  extends YachtSync
                                 //exit;
                             }
                         }
-
                         $return = $return && isset($returnId) && $subReturn;
                     }
                 }
@@ -500,14 +499,10 @@ class NausysYacht  extends YachtSync
             }
         }
         if ($return) {
-
             self::$model::archive();
             $return = 1;
         }
-
         return $return;
-
-        return false;
     }
 
 

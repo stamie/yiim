@@ -84,10 +84,8 @@ class LoginForm extends Model
      */
     public function loginWithAjax()
     {
-        //if ($this->validate()) {
-            return Yii::$app->user->login($this->getUserWithAjax(), $this->rememberMe ? 3600*24*30 : 0);
-        //}
-        return false;
+        return Yii::$app->user->login($this->getUserWithAjax(), $this->rememberMe ? 3600*24*30 : 0);
+       
     }
 
     /**

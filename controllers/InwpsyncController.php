@@ -816,7 +816,6 @@ const ERROR_PRICEMEASURE = 19;
 
                 if ($isAjax) {
                     return (json_encode(['pr'=>$prefix, 'prId'=>$prId, 'return' => $return]));
-                    return;
                 } else
                     return  $return;
             } else {

@@ -199,10 +199,8 @@ class CashYachts extends Cashing
             }
 
             return $content;
-            return;
         }
         return $content;
-        return;
     }
  public static function dateFromTo($value, $key)
  {
