@@ -1,16 +1,11 @@
 <?php
-
 namespace app\models;
-
 use Yii;
-
 /**
  * This is the model class for table "additional_equipment".
- *
  * @property int $id
  * @property int|null $wp_id
  * @property int $xml_json_id
- 
  * @property int $xml_id
  * @property string $
  * @property int $is_active
@@ -38,7 +33,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
     {
         return 'additional_equipment';
     }
-
     /**
      * {@inheritdoc}
      */
@@ -52,7 +46,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
             [['currency'], 'string', 'max' => 50],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -60,11 +53,8 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            
             'xml_json_id' => 'Xml Json ID',
-
             'xml_id' => 'Xml ID',
-
             'is_active' => 'Is Active',
             'quantity' => 'Quantity',
             'price' => 'Price',
@@ -84,7 +74,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
     }
     
     public static function sync( 
-
         $xml_id, 
         $comment,
         $quantity,
@@ -93,7 +82,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
         $yacht_id,
         $equipment_id,
         $season_id,
-        
         $price_measure_id,
         $calculation_type,
         $condition_string,
@@ -118,7 +106,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
             $additionalEquipment->yacht_id = $yacht_id;
             $additionalEquipment->equipment_id = $equipment_id;
             $additionalEquipment->season_id = $season_id;
-            
             $additionalEquipment->price_measure_id = $price_measure_id;
             $additionalEquipment->calculation_type = $calculation_type;
             $additionalEquipment->condition_string = $condition_string;
@@ -126,12 +113,9 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
             $additionalEquipment->amount_is_percentage = $amount_is_percentage;
             $additionalEquipment->percentage_calculation_type = $percentage_calculation_type;
             $additionalEquipment->minimum_price = $minimum_price;
-            
             $additionalEquipment->save(0); 
-           
             return $additionalEquipment; 
         } 
-
         $additionalEquipment = new AdditionalEquipment(); 
         $additionalEquipment->comment = $comment;
         $additionalEquipment->quantity = $quantity;
@@ -140,7 +124,6 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
         $additionalEquipment->yacht_id = $yacht_id;
         $additionalEquipment->equipment_id = $equipment_id;
         $additionalEquipment->season_id = $season_id;
-        
         $additionalEquipment->price_measure_id = $price_measure_id;
         $additionalEquipment->calculation_type = $calculation_type;
         $additionalEquipment->condition_string = $condition_string;
@@ -149,17 +132,11 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
         $additionalEquipment->percentage_calculation_type = $percentage_calculation_type;
         $additionalEquipment->minimum_price = $minimum_price;
         $additionalEquipment->xml_json_id = $xml_json_id;
-
         if ($additionalEquipment->save()){ 
-
             return $additionalEquipment; 
         } 
-
-        
         return 0; 
-                                
     } 
-
     public static function inactiveAllSeason( 
         $wp_prefix, 
         $xml_id 
@@ -169,17 +146,13 @@ class AdditionalEquipment extends \yii\db\ActiveRecord
                                             'is_active' => 1, 
                                         ]); 
         while ($additionalEquipment){ 
-
             $additionalEquipment->is_active = 0; 
             $additionalEquipment->save(0); 
-
             $additionalEquipment = AdditionalEquipment::findOne([ 
                 'xml_id' => $xml_id, 
                 'is_active' => 1, 
             ]); 
-
         } 
-        
         return; 
     }
 }

@@ -30,7 +30,7 @@ class BankSync {
      * Base functions 
      */
 
-    public function __construct($ID = null, $isActive = 1, $wp_prefix, $xml_id,
+    public function __construct($ID = null, $xml_id,
                                 $company_id,
                                 $bankName,
                                 $bankAddress,
@@ -38,7 +38,6 @@ class BankSync {
                                 $swift = null,
                                 $iban = null
     ) {
-        $this->wp_prefix = $wp_prefix;
         $this->xml_id = $xml_id;
         $this->company_id = $company_id;
         $this->bank_name = $bankName;

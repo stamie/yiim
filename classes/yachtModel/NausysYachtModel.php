@@ -1,19 +1,15 @@
 <?php
 namespace app\classes\yachtModel;
-
 use app\classes\yachtModel\YachtModelSync;
 use app\classes\Nausys;
 use app\models\YachtModel;
 use app\models\Xml;
-
 class NausysYachtModel  extends YachtModelSync {
-
     private static $resturl = 'http://ws.nausys.com/CBMS-external/rest/catalogue/v6/yachtModels';
     private static $modelName = 'app\classes\yachtModel\NausysYachtModel';
     private static $model = 'app\models\YachtModel';
     private static $objectname = 'models'; //JSON-ban a második paraméter, a státusz után....
-
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlJsonId, $name_, $isActive = 1,
+    public function __construct($ID = null, $xmlJsonId, $name_, $isActive = 1,
         $category_xml_id_,
         $builder_xml_id_,
         $loa,
@@ -27,14 +23,11 @@ class NausysYachtModel  extends YachtModelSync {
     )
     {
         $xmlId = 0;
-
         $xml = Xml::findOne(array('slug' => 'nausys'));
-
         if ($xml){
             $xmlId = $xml->id;
         }
-
-        parent::__construct($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive,
+        parent::__construct($ID, $xmlId, $xmlJsonId, $name_, $isActive,
             $category_xml_id_,
             $builder_xml_id_,
             $loa,
@@ -46,57 +39,35 @@ class NausysYachtModel  extends YachtModelSync {
             $fuel_tank,
             $displacemen
         );
-        //$obj = new CountrySync($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive);
-        //var_dump($this); exit;
-
     }
-
     /**
      * 
      * Syncrons function
      */
-
     public static function syncronise($prId) {
-
         $cred = new Nausys();
-        
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, self::$resturl );
         curl_setopt( $ch, CURLOPT_POST, true ); 
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $ch, CURLOPT_POSTFIELDS,  $cred->getJsonCredentials() ); 
-           
-
         $header = array('Content-Type: application/json');
-        
-
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $exec = curl_exec($ch);
         curl_close($ch);
-
         if( $exec ){
-
             $obj = json_decode ( $exec );
-            
             if ($obj->status == "OK") {
-
                 $objName = self::$objectname;
-
                 $objectes = $obj->$objName;
-                
                 $xmlId = 0;
-
                 $xml = Xml::findOne(array('slug' => 'nausys'));
-
                 if ($xml){
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId) );
-
+                self::inactiveRows(intval($xmlId));
                 $return = true;
-
                 foreach ($objectes as $obj) {
-                   
                     $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name, 1, // ->textEN ); //,0 1 );
                                                     $obj->yachtCategoryId,
                                                     $obj->yachtBuilderId,
@@ -110,36 +81,24 @@ class NausysYachtModel  extends YachtModelSync {
                                                     $obj->displacement
                                 );
                     $return = $return && $objObj->sync();
-                    
                 }
-
                 return $return;
-
             }
         }
-
-        
         return false;
     }
-
     /**
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
-
+    private static function inactiveRows(int $xml_id) {
         $objName = self::$model;
-
         $objectes = $objName::findAll([ 'xml_id' => $xml_id]);
         foreach ($objectes as $obj)
         {
             $obj->is_active = 0;
             $obj->save(false);
-
         }
-
         return true;
     }
 }
-
-?>

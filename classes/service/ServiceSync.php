@@ -1,12 +1,8 @@
 <?php
-
 namespace app\classes\service;
-
 use app\models\ServiceType;
-
 class ServiceSync {
     private static $model = 'app\models\Service';
-    
     protected $id;
     protected $wp_id;
     protected $wp_prefix;
@@ -14,22 +10,18 @@ class ServiceSync {
     protected $xml_json_id;
     protected $name;
     protected $is_active;
-
     /**
      * 
      * Base functions 
      */
-
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1
     ) {
-
         $this->id = $ID;
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
         $this->name = $name_;
         $this->is_active = intval($isActive);
     }
-
     /**
      * 
      * Additional functions 
@@ -60,7 +52,4 @@ class ServiceSync {
         }
         return false;
     }
-
 }
-
-?>

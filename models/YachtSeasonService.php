@@ -1,15 +1,10 @@
 <?php
-
 namespace app\models;
-
 use Yii;
-
 /**
  * This is the model class for table "yacht_season_service".
- *
  * @property int $id
  * @property int|null $wp_id
- 
  * @property int $xml_id
  * @property int $xml_json_id
  * @property string $name
@@ -41,7 +36,6 @@ class YachtSeasonService extends \yii\db\ActiveRecord
     {
         return 'yacht_season_service';
     }
-
     /**
      * {@inheritdoc}
      */
@@ -51,13 +45,11 @@ class YachtSeasonService extends \yii\db\ActiveRecord
             [['xml_id', 'xml_json_id', 'is_active', 'yacht_id', 'season_id', 'service_id', 'price_measure_id', 'have_valid_for_bases', 'obligatory', 'amount_is_percentage', 'valid_min_pax', 'valid_max_pax'], 'integer'],
             [['xml_id', 'xml_json_id', 'season_id', 'yacht_id', 'service_id', 'price', 'currency', 'price_measure_id', 'calculation_type', 'obligatory', 'amount'], 'required'],
             [['description'], 'string'],
-
             [['price', 'minimum_price'], 'string', 'max' => 20],
             [['currency'], 'string', 'max' => 5],
             [['calculation_type', 'amount', 'percentage_calculation_type', 'valid_period_from', 'valid_period_to'], 'string', 'max' => 50],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -66,7 +58,6 @@ class YachtSeasonService extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'wp_id' => 'Wp ID',
-
             'xml_id' => 'Xml ID',
             'xml_json_id' => 'Xml Json ID',
             'name' => 'Name',
@@ -92,7 +83,6 @@ class YachtSeasonService extends \yii\db\ActiveRecord
     }
 
     public static function sync(
-
         $xml_id,
         $xml_json_id,
         $yacht_id,
@@ -103,8 +93,6 @@ class YachtSeasonService extends \yii\db\ActiveRecord
         $price_measure_id,
         $calculation_type = '',
         $obligatory = 0,
-
-
         $description = '',
         $amount,
         $have_valid_for_bases = 0,

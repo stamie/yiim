@@ -34,7 +34,7 @@ class CompanySync {
      * Base functions 
      */
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1,
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1,
     $address,
     $city,
     $zip,

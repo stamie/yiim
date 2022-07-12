@@ -1,9 +1,6 @@
 <?php
-
 namespace app\models;
-
 use Yii;
-
 /**
  * This is the model class for table "services_valid_for_bases".
  *
@@ -25,7 +22,6 @@ class ServicesValidForBases extends \yii\db\ActiveRecord
     {
         return 'services_valid_for_bases';
     }
-
     /**
      * {@inheritdoc}
      */
@@ -36,7 +32,6 @@ class ServicesValidForBases extends \yii\db\ActiveRecord
             [['id', 'xml_id', 'service_id', 'base_id', 'is_active', 'yacht_id', 'season_id'], 'integer'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -44,10 +39,7 @@ class ServicesValidForBases extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            
-
             'xml_id' => 'Xml ID',
-            
             'service_id' => 'Service ID',
             'base_id' => 'Base ID',
             'is_active' => 'Is Active',
@@ -55,7 +47,6 @@ class ServicesValidForBases extends \yii\db\ActiveRecord
             'season_id' => 'Season Id',
         ];
     }
-
     public static function saveModel(
         $xml_id,
         $service_id,
@@ -65,32 +56,23 @@ class ServicesValidForBases extends \yii\db\ActiveRecord
         $season_id
     ) {
         $servicesValidForBases = ServicesValidForBases::findOne([
-       
             'xml_id' => $xml_id,
-            
             'service_id' => $service_id,
             'base_id' => $base_id,
             'yacht_id' => $yacht_id,
             'season_id' => $season_id,
         ]);
         if (!$servicesValidForBases){
-
             $servicesValidForBases = new ServicesValidForBases();
-            
             $servicesValidForBases->xml_id = $xml_id;
-           
             $servicesValidForBases->service_id = $service_id;
             $servicesValidForBases->base_id = $base_id;
             $servicesValidForBases->yacht_id = $yacht_id;
             $servicesValidForBases->season_id = $season_id;
-
             $servicesValidForBases->save();
-            
         }
         $servicesValidForBases->is_active = $is_active;
-
         $servicesValidForBases->save(false);
-            
         return $servicesValidForBases;
 
     }

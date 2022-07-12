@@ -1,12 +1,8 @@
 <?php
-
 namespace app\classes\yachtModel;
-
 use app\models\YachtModel;
-
 class YachtModelSync {
     private static $model = 'app\models\YachtModel';
-    
     protected $id;
     protected $wp_id;
     protected $wp_prefix;
@@ -24,13 +20,11 @@ class YachtModelSync {
     protected $water_tank;
     protected $fuel_tank;
     protected $displacemen;
-
     /**
      * 
      * Base functions 
      */
-
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1,
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1,
         $category_xml_id_,
         $builder_xml_id_,
         $loa,
@@ -59,7 +53,6 @@ class YachtModelSync {
         $this->fuel_tank = $fuel_tank;
         $this->displacemen = $displacemen;
     }
-
     /**
      * 
      * Additional functions 
@@ -69,15 +62,11 @@ class YachtModelSync {
      * 
      * Syncrons function
      */
-    
-     
     public function sync () {
         if ($this) {
             $this->condition = [
-                
                 'xml_id' => $this->xml_id,
                 'xml_json_id' => $this->xml_json_id,
-
             ];
             $object = self::$model::findOne($this->condition);
             if ($object){
@@ -106,5 +95,3 @@ class YachtModelSync {
     }
 
 }
-
-?>

@@ -16,7 +16,7 @@ class NausysCompany  extends CompanySync {
     private static $subModel = 'app\models\Bank';
     private static $subModelsName = 'app\classes\company\BankSync';
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlJsonId, $name_, $isActive = 1,
+    public function __construct($ID = null, $xmlJsonId, $name_, $isActive = 1,
                                 $address,
                                 $city,
                                 $zip,
@@ -38,7 +38,7 @@ class NausysCompany  extends CompanySync {
             $xmlId = $xml->id;
         }
 
-        parent::__construct($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive,
+        parent::__construct($ID, $xmlId, $xmlJsonId, $name_, $isActive,
                             $address,
                             $city,
                             $zip,

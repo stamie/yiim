@@ -25,7 +25,7 @@ class NausysCountry  extends CountrySync {
     public $is_active;
     
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlJsonId, $code_, $name_, $isActive = true)
+    public function __construct($ID = null, $xmlJsonId, $code_, $name_, $isActive = true)
     {
         $xmlId = 0;
 
@@ -35,7 +35,7 @@ class NausysCountry  extends CountrySync {
             $xmlId = $xml->id;
         }
 
-        parent::__construct($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $code_, $name_, $isActive);
+        parent::__construct($ID, $xmlId, $xmlJsonId, $code_, $name_, $isActive);
         //$obj = new CountrySync($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $code_, $name_, $isActive);
         //var_dump($this); exit;
 

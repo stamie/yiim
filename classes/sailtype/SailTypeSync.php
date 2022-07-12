@@ -6,7 +6,6 @@ use app\models\SailType;
 
 class SailTypeSync {
     private static $model = 'app\models\SailType';
-    
     protected $id;
     protected $wp_id;
     protected $wp_prefix;
@@ -14,14 +13,11 @@ class SailTypeSync {
     protected $xml_json_id;
     protected $name;
     protected $is_active;
-
-   
     /**
      * 
      * Base functions 
      */
-
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1
     ) {
         $this->id = $ID;
         $this->xml_id = $xmlId;
@@ -29,7 +25,6 @@ class SailTypeSync {
         $this->name = $name_;
         $this->is_active = intval($isActive);
     }
-
     /**
      * 
      * Additional functions 
@@ -39,20 +34,12 @@ class SailTypeSync {
      * 
      * Syncrons function
      */
-    
-     
     public function sync () {
-
-
         if ($this) {
-
             $condition = [
-                
                 'xml_id' => $this->xml_id,
                 'xml_json_id' => $this->xml_json_id,
-
             ];
-
             $object = self::$model::findOne($condition);
             if ($object){
                 $object->is_active = 1;
@@ -68,7 +55,4 @@ class SailTypeSync {
         }
         return false;
     }
-
 }
-
-?>

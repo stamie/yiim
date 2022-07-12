@@ -68,7 +68,7 @@ class YachtSync {
      * Base functions 
      */
 
-    public function __construct($ID = null, $wp_id = 0, $wpPrefix, $xml_id, $xmlJson_id, $name_, $isActive = 1,
+    public function __construct($ID = null, $wp_id = 0, $xml_id, $xmlJson_id, $name_, $isActive = 1,
     $company_id,
     $base_id,
     $location_id,
@@ -96,7 +96,6 @@ class YachtSync {
     $four_star_charter,
     $charter_type,
     $propulsion_type,
-
     $internal_use,
     $launched_year,
     $needs_option_approval,
@@ -111,15 +110,12 @@ class YachtSync {
     $third_party_insurance_currency,
     $max_person
     ) {
-
         $this->id = $ID;
         $this->wp_id = $wp_id;
-        
         $this->xml_id = $xml_id;
         $this->xml_json_id = $xmlJson_id;
         $this->name = $name_;
         $this->is_active = intval($isActive);
-
         $this->company_id = $company_id;
         $this->base_id = $base_id;
         $this->location_id = $location_id;
@@ -147,8 +143,6 @@ class YachtSync {
         $this->four_star_charter = $four_star_charter;
         $this->charter_type = $charter_type;
         $this->propulsion_type = $propulsion_type;
-
-
         $this->internal_use = $internal_use;
         $this->launched_year = $launched_year;
         $this->needs_option_approval = $needs_option_approval;
@@ -162,8 +156,6 @@ class YachtSync {
         $this->third_party_insurance_amount = $third_party_insurance_amount;
         $this->third_party_insurance_currency =$third_party_insurance_currency;
         $this->max_person = $max_person;
- 
-
     }
 
     /**
@@ -175,41 +167,29 @@ class YachtSync {
      * 
      * _syncrons function
      */
-    
-     
     public function sync () {
-
-
         if ($this) {
-
             $condition = [
-                
                 'xml_id' => $this->xml_id,
                 'xml_json_id' => $this->xml_json_id,
                 'is_archive' => 0,
                 'is_active' => 0,
-
             ];
-
             $object = self::$model::findOne($condition);
             if (!$object){
                 $object = new self::$model();
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
-                
             }
             if ($object && (empty($object->id) || $object->id>3235)){
                 $object->name = $this->name;
                 $object->is_active = 1;
-              
-
                 $object->company_id = $this->company_id;
                 $object->base_id = $this->base_id;
                 $object->location_id = $this->location_id;
                 $object->yacht_model_id = $this->yacht_model_id;
                 $object->build_year = $this->build_year;
                 $object->engine_builder_id = $this->engine_builder_id;
-                
                 $object->propulsion_type = $this->propulsion_type;
                 $object->fuel_tank = $this->fuel_tank;
                 $object->water_tank = $this->water_tank;
@@ -223,15 +203,12 @@ class YachtSync {
                     $object->save(0);
                 else
                     $object->saveYacht();
-
                 $object1 = YachtDatas1::findOne($object->id);
                 if (!$object1){
                     $object1 = new YachtDatas1();
                 }
                 $object1->id = $object->id;
                 $object1->xml_id = $this->xml_id;
-                //$object1->xml_json_id = $this->xml_json_id;
-                
                 $object1->yacht_model_id = $this->yacht_model_id;
                 $object1->draft = $this->draft;
                 $object1->cabins = $this->cabins;
@@ -243,8 +220,6 @@ class YachtSync {
                 $object1->wc = $this->wc;
                 $object1->wc_crew = $this->wc_crew; 
                 $object1->save(0);
-
-
                 $object2 = YachtDatas2::findOne($object->id);
                 if (!$object2){
                     $object2 = new YachtDatas2();
@@ -260,7 +235,6 @@ class YachtSync {
                 $object2->genoa_type_id = $this->genoa_type_id;
                 $object2->genoa_renewed = $this->genoa_renewed;
                 $object2->save(0);
-
                 $object3 = YachtDatas3::findOne($object->id);
                 if (!$object3){
                     $object3 = new YachtDatas3();
@@ -276,105 +250,13 @@ class YachtSync {
                 $object3->launched_year = $this->launched_year;
                 $object3->needs_option_approval = $this->needs_option_approval;
                 $object3->can_make_booking_fixed = $this->can_make_booking_fixed;
-                
                 $object3->charter_type = $this->charter_type;
                 $object3->save(0);
-
-                
                 return $object->id;
-            }/* else {
-                
-                $object = new self::$model();
-                
-                //$object->wp_id = $this->wp_id;
-               // $object->wp_prefix = $this->wp_prefix;
-                $object->xml_id = $this->xml_id;
-                $object->xml_json_id = $this->xml_json_id;
-                $object->name = $this->name;
-                $object->is_active = 1;
-
-
-                $object->company_id = $this->company_id;
-                $object->base_id = $this->base_id;
-                $object->location_id = $this->location_id;
-                $object->yacht_model_id = $this->yacht_model_id;
-
-                $object->build_year = $this->build_year;
-                $object->propulsion_type = $this->propulsion_type;
-                $object->fuel_tank = $this->fuel_tank;
-                $object->water_tank = $this->water_tank;
-                $object->mast_length = $this->mast_length;
-                $object->number_of_rudder_blades = $this->number_of_rudder_blades;
-                $object->hull_color = $this->hull_color;
-                $object->third_party_insurance_amount = $this->third_party_insurance_amount;
-                $object->third_party_insurance_currency =$this->third_party_insurance_currency;
-                $object->max_person = $this->max_person;
-           
-                if($object->saveYacht()){
-
-                    $object1 = YachtDatas1::findOne($object->id);
-                    if (!$object1){
-                        $object1 = new YachtDatas1();
-                    }
-                    $object1->id = $object->id;
-                    $object1->xml_id = $this->xml_id;
-                    //$object1->xml_json_id = $this->xml_json_id;
-                    
-                    $object1->yacht_model_id = $this->yacht_model_id;
-                    $object1->draft = $this->draft;
-                    $object1->cabins = $this->cabins;
-                    $object1->cabins_crew = $this->cabins_crew;
-                    $object1->berths_cabin = $this->berths_cabin;
-                    $object1->berths_salon = $this->berths_salon;
-                    $object1->berths_crew = $this->berths_crew;
-                    $object1->berths_total = $this->berths_total;
-                    $object1->wc = $this->wc;
-                    $object1->wc_crew = $this->wc_crew;
-                    $object1->save(0);
-
-                    $object2 = YachtDatas2::findOne($object->id);
-                    if (!$object2){
-                        $object2 = new YachtDatas2();
-                    }
-                    $object2->id = $object->id;
-                    $object2->engine_builder_id = $this->engine_builder_id;
-                    $object2->engines = $this->engines;
-                    $object2->engine_power = $this->engine_power;
-                    $object2->steering_type_id = $this->steering_type_id;
-                    $object2->sail_type_id = $this->sail_type_id;
-                    $object2->sail_renewed = $this->sail_renewed;
-                    $object2->genoa_type_id = $this->genoa_type_id;
-                    $object2->genoa_renewed = $this->genoa_renewed;
-                    $object2->save(0);
-
-                    $object3 = YachtDatas3::findOne($object->id);
-                    if (!$object3){
-                        $object3 = new YachtDatas3();
-                    }
-                    $object3->id = $object->id;
-                    $object3->commission = $this->commission;
-                    $object3->deposit = $this->deposit;
-                    $object3->max_discount = $this->max_discount;
-                    $object3->four_star_charter = $this->four_star_charter;
-                    $object3->internal_use = $this->internal_use;
-                    $object3->launched_year = $this->launched_year;
-                    $object3->needs_option_approval = $this->needs_option_approval;
-                    $object3->can_make_booking_fixed = $this->can_make_booking_fixed;
-                    
-                    $object3->charter_type = $this->charter_type;
-                    $object3->save(0);
-                    return ($object->id);
-                }
-                return 0;
-                
             }
-
-           */
         }
-
         return false;
     }
-
     protected static function rrmdir($dir) { 
         if (is_dir($dir)) { 
             $objects = scandir($dir);
@@ -389,7 +271,4 @@ class YachtSync {
             @rmdir($dir); 
         } 
     }
-    
 }
-
-?>

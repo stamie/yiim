@@ -21,17 +21,13 @@ class YachtCategorySync {
      * Base functions 
      */
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1)
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1)
     {
         $this->id = $ID;
-        
-        
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
         $this->name = $name_;
         $this->is_active = intval($isActive);
-        
-
     }
 
 
