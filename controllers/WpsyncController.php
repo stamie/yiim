@@ -107,7 +107,7 @@ class WpsyncController extends \yii\web\Controller
 
                 $picture = '';
                 foreach ($scanned_directory as $file) {
-                    if (is_file($dir . '/' . $file) && strpos($file, 'main') > 0) {
+                    if (is_file($dir . '/' . $file) && strpos($file, '-main') > 0) {
                         $picture = str_replace('Boat', $yachtForXml->wp_name, 'src="' . str_replace('/web', '', Url::base(1)) . '/boat-' . $yachtForXml->xml_id . '/' . $yachtForXml->id . '/' . $file . '" class="thumbnail" alt="Boat" title="Boat" style="height:100%;display: block; margin-left: auto; margin-right: auto;"');
                     }
                     $return[$yachtForXml->id] = $picture;
