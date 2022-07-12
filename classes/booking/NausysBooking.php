@@ -659,7 +659,7 @@ class NausysBooking extends Booking
 
         foreach ($yachtCategories as $yachtCat) {
             if ($yachtCat->name == $yacht_category) {
-                $attributes['yacht_categories'] = [$yachtCat->xml_json_id];
+                $attributes['yacht_categories'] = [$yachtCat->name];
                 if (is_array($ports) && count($ports))
                     $attributes['ports'] = $ports;
 
