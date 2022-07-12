@@ -59,27 +59,6 @@ class BaseSync {
         $this->wp_lat = floatval($wp_lat);
 
     }
-
-    public function getId (){
-        return $this->id;
-    }
-    public function getWpId (){
-        return $this->wp_id;
-    }
-    public function getWpPrefix (){
-        return $this->wp_prefix;
-    }
-    public function getXmlId (){
-        return $this->xml_id;
-    }
-    public function getXmlJsonId (){
-        return $this->xml_json_id;
-    }
-
-    public function getIsActive (){
-        return $this->is_active;
-    }
-
     /**
      * 
      * Additional functions 

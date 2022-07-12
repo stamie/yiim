@@ -49,23 +49,6 @@ class BankSync {
 
     }
 
-    public function getId (){
-        return $this->id;
-    }
-    public function getWpId (){
-        return $this->wp_id;
-    }
-    public function getWpPrefix (){
-        return $this->wp_prefix;
-    }
-    public function getXmlId (){
-        return $this->xml_id;
-    }
-
-    public function getIsActive (){
-        return $this->is_active;
-    }
-
     /**
      * 
      * Additional functions 

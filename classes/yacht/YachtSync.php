@@ -166,28 +166,6 @@ class YachtSync {
 
     }
 
-    public function get_id (){
-        return $this->id;
-    }
-    public function getWp_id (){
-        return $this->wp_id;
-    }
-    public function getWpPrefix (){
-        return $this->wp_prefix;
-    }
-    public function getXml_id (){
-        return $this->xml_id;
-    }
-    public function getXmlJson_id (){
-        return $this->xml_json_id;
-    }
-    public function getName (){
-        return $this->name;
-    }
-    public function getIsActive (){
-        return $this->is_active;
-    }
-
     /**
      * 
      * Additional functions 
