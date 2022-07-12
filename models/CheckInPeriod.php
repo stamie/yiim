@@ -1,14 +1,9 @@
 <?php
-
 namespace app\models;
-
 use Yii;
-
 /**
  * This is the model class for table "check_in_period".
- *
  * @property int $id
- * @property int $wp_id
  * @property int $xml_id
  * @property int $yacht_id
  * @property string $date_from
@@ -38,19 +33,17 @@ class CheckInPeriod extends \yii\db\ActiveRecord
     {
         return 'check_in_period';
     }
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [[ 'xml_id', 'yacht_id', 'date_from', 'date_to', 'minimal_reservation_duration', 'check_in_monday', 'check_in_tuesday', 'check_in_wednesday', 'check_in_thursday', 'check_in_friday', 'check_in_saturday', 'check_in_sunday', 'check_out_monday', 'check_out_tuesday', 'check_out_wednesday', 'check_out_thursday', 'check_out_friday', 'check_out_saturday', 'check_out_sunday'], 'required'],
+            [['xml_id', 'yacht_id', 'date_from', 'date_to', 'minimal_reservation_duration', 'check_in_monday', 'check_in_tuesday', 'check_in_wednesday', 'check_in_thursday', 'check_in_friday', 'check_in_saturday', 'check_in_sunday', 'check_out_monday', 'check_out_tuesday', 'check_out_wednesday', 'check_out_thursday', 'check_out_friday', 'check_out_saturday', 'check_out_sunday'], 'required'],
             [['xml_id', 'yacht_id', 'minimal_reservation_duration', 'check_in_monday', 'check_in_tuesday', 'check_in_wednesday', 'check_in_thursday', 'check_in_friday', 'check_in_saturday', 'check_in_sunday', 'check_out_monday', 'check_out_tuesday', 'check_out_wednesday', 'check_out_thursday', 'check_out_friday', 'check_out_saturday', 'check_out_sunday'], 'integer'],
             [['date_from', 'date_to'], 'safe'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -58,8 +51,6 @@ class CheckInPeriod extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            
-
             'xml_id' => 'Xml ID',
             'yacht_id' => 'Yacht ID',
             'date_from' => 'Date From',
@@ -81,9 +72,7 @@ class CheckInPeriod extends \yii\db\ActiveRecord
             'check_out_sunday' => 'Check Out Sunday',
         ];
     }
-
     public static function sync(
-
             $xml_id,
             $yacht_id,
             $date_from,
@@ -103,17 +92,14 @@ class CheckInPeriod extends \yii\db\ActiveRecord
             $check_out_friday,
             $check_out_saturday,
             $check_out_sunday
-
     ){
         $check = CheckInPeriod::findOne([
             'xml_id'   => $xml_id,
             'yacht_id' => $yacht_id,
             'date_from' => $date_from,
             'date_to' => $date_to,
-        
         ]);
         if ($check){    
-        
         $check->xml_id = $xml_id;
         $check->yacht_id = $yacht_id;
         $check->date_from = $date_from;
@@ -133,12 +119,9 @@ class CheckInPeriod extends \yii\db\ActiveRecord
         $check->check_out_friday = $check_out_friday;
         $check->check_out_saturday = $check_out_saturday;
         $check->check_out_sunday = $check_out_sunday;
-
         $check->save(0);
         } else {
             $check = new CheckInPeriod();
-            
-            
             $check->xml_id = $xml_id;
             $check->yacht_id = $yacht_id;
             $check->date_from = $date_from;
@@ -158,9 +141,7 @@ class CheckInPeriod extends \yii\db\ActiveRecord
             $check->check_out_friday = $check_out_friday;
             $check->check_out_saturday = $check_out_saturday;
             $check->check_out_sunday = $check_out_sunday;
-
             $bool = $check->save();
-
             if (!$bool){
                 return null;
             }

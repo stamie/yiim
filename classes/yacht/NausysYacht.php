@@ -1,12 +1,9 @@
 <?php
-
 namespace app\classes\yacht;
-
 use Yii;
 use app\classes\yacht\YachtSync;
 use app\classes\Nausys;
 use app\models\Xml;
-//use app\classes\country\PhotoSync;
 use app\models\Company;
 use app\models\Price;
 use app\models\RegularDiscount;
@@ -18,7 +15,6 @@ use app\models\CheckInPeriod;
 use app\models\YachtPriceLocation;
 use app\models\YachtSeasonService;
 use app\models\ServicesValidForBases;
-
 class NausysYacht  extends YachtSync
 {
     private static $resturl      = 'http://ws.nausys.com/CBMS-external/rest/catalogue/v6/yachts/';
@@ -30,7 +26,6 @@ class NausysYacht  extends YachtSync
     public function __construct(
         $ID = null,
         $wpId = 0,
-        $wpPrefix,
         $xmlJsonId,
         $name_,
         $isActive = 1,
@@ -83,7 +78,6 @@ class NausysYacht  extends YachtSync
         parent::__construct(
             $ID,
             $wpId,
-            $wpPrefix,
             $xmlId,
             $xmlJsonId,
             $name_,
@@ -135,7 +129,7 @@ class NausysYacht  extends YachtSync
      * Syncrons function
      */
 
-    public static function syncronise($prId)
+    public static function syncronise()
     {
         $cred = new Nausys();
         $xmlId = 0;
@@ -143,15 +137,12 @@ class NausysYacht  extends YachtSync
         if ($xml) {
             $xmlId = $xml->id;
         };
-
         $companies = Company::findAll(['xml_id' => $xmlId, 'is_active' => 1]);
-
         if (is_array($companies)) {
             $return = true;
-
             foreach ($companies as $company) {
                 echo ($company->name);
-                $return = $return && self::syncroniseWithCompany($prId, $company->id);
+                $return = $return && self::syncroniseWithCompany($company->id);
             }
         }
         return false;
@@ -160,8 +151,7 @@ class NausysYacht  extends YachtSync
      * 
      * Syncrons With Company (cégek alapján szinkronizál)
      */
-
-    public static function syncroniseWithCompany($prId, $company_id)
+    public static function syncroniseWithCompany($company_id)
     {
         $cred = new Nausys();
         $xmlId = 0;
@@ -169,50 +159,37 @@ class NausysYacht  extends YachtSync
         if ($xml) {
             $xmlId = $xml->id;
         };
-
         $companies = Company::findOne(['xml_id' => $xmlId, 'is_active' => 1, 'id' => $company_id]);
         $return = true;
-
         if (isset($companies)) {
-
             $company = $companies;
-            self::inactiveRows(intval($prId), intval($xmlId), $company->xml_json_id);
-            Price::inactiveAll($prId, $xmlId, $company->xml_json_id);
-
-            YachtSeason::inactiveAllSeason($prId, $xmlId, $company->xml_json_id);
-            RegularDiscount::inactiveAll($prId, $xmlId, $company->xml_json_id);
-
+            self::inactiveRows(intval($xmlId), $company->xml_json_id);
+            Price::inactiveAll($xmlId, $company->xml_json_id);
+            YachtSeason::inactiveAllSeason($xmlId, $company->xml_json_id);
+            RegularDiscount::inactiveAll($xmlId, $company->xml_json_id);
             echo ($company->name);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, self::$resturl . $company->xml_json_id);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS,  $cred->getJsonCredentials());
-
             $header = array('Content-Type: application/json');
-
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $exec = curl_exec($ch);
             curl_close($ch);
             if ($exec) {
                 $Obj = json_decode($exec);
-
                 if ($Obj->status == "OK") {
-
                     $objName = self::$objectname;
-
                     $objectes = $Obj->$objName;
                     foreach ($objectes as $obj) {
-
                         $objObj = new self::$modelName(
                             null,
                             0,
-                            $prId,
                             intval($obj->id),
                             $obj->name,
                             1, //->textEN, 1,
                             $obj->companyId,
-
                             $obj->baseId,
                             $obj->locationId,
                             $obj->yachtModelId,
@@ -239,7 +216,6 @@ class NausysYacht  extends YachtSync
                             $obj->fourStarCharter ? 1 : 0,
                             isset($obj->charterType) ? $obj->charterType : null,
                             isset($obj->propulsionType) ? $obj->propulsionType : null,
-
                             isset($obj->internalUse) ? $obj->internalUse : null,
                             isset($obj->launchedYear) ? $obj->launchedYear : null,
                             $obj->needsOptionApproval ? 1 : 0,
@@ -254,19 +230,11 @@ class NausysYacht  extends YachtSync
                             isset($obj->thirdPartyInsuranceCurrency) ? $obj->thirdPartyInsuranceCurrency : null,
                             isset($obj->maxPersons) ? $obj->maxPersons : null
                         );
-
                         $returnId = $objObj->sync();
-
                         if ($returnId) {
-
-                            //seasonSpecificData // <- ár syncron
-                            //szezon és ár 
                             if (isset($obj->seasonSpecificData) && is_array($obj->seasonSpecificData)) {
-
                                 foreach ($obj->seasonSpecificData as $season) {
-                                    //var_dump($season); exit;
                                     $yachtSeason = YachtSeason::sync(
-                                        $prId,
                                         $xmlId,
                                         $season->seasonId,
                                         $season->baseId,
@@ -277,15 +245,12 @@ class NausysYacht  extends YachtSync
                                         return null;
                                     }
                                     if ($yachtSeason && isset($season->prices)) {
-
                                         foreach ($season->prices as $price) {
-
                                             $date_time = strtotime($price->dateFrom);
                                             $date_from = date('Y-m-d H:i:s', $date_time);
                                             $date_time = strtotime($price->dateTo);
                                             $date_to   = date('Y-m-d H:i:s', $date_time);
                                             $yachtPrice =  Price::sync(
-
                                                 $yachtSeason->xml_id,
                                                 $yachtSeason->season_id,
                                                 $date_from,
@@ -295,17 +260,13 @@ class NausysYacht  extends YachtSync
                                                 $price->type,
                                                 intval($obj->id)
                                             );
-
                                             if (!$yachtPrice) {
                                                 return null;
                                             }
-
-                                            YachtPriceLocation::inactiveAll($prId, $xmlId, $yachtPrice->id);
+                                            YachtPriceLocation::inactiveAll($xmlId, $yachtPrice->id);
                                             if ($yachtPrice && is_array($price->locationsId)) {
-
                                                 foreach ($price->locationsId as $location_id) {
-                                                    // var_dump("bemegy"); exit;
-                                                    $yachtPriceLocation = YachtPriceLocation::sync($prId, $xmlId, $yachtPrice->id, $location_id);
+                                                    $yachtPriceLocation = YachtPriceLocation::sync($xmlId, $yachtPrice->id, $location_id);
                                                     if (!$yachtPriceLocation) {
                                                         return null;
                                                     }
@@ -313,41 +274,27 @@ class NausysYacht  extends YachtSync
                                             }
                                         }
                                     }
-
                                     if ($yachtSeason && is_array($season->regularDiscounts)) {
                                         foreach ($season->regularDiscounts as $regularDiscount) {
-
-                                            //if(empty($regularDiscount->discountItemId)) { return null;}
-                                            $discount = RegularDiscount::sync($prId, $xmlId, $obj->id, intval($season->seasonId), intval($regularDiscount->discountItemId), floatval($regularDiscount->amount), $regularDiscount->type);
-                                            /*   if (!$discount){
-                                                    return null;
-                                                } */
+                                            $discount = RegularDiscount::sync($xmlId, $obj->id, intval($season->seasonId), intval($regularDiscount->discountItemId), floatval($regularDiscount->amount), $regularDiscount->type);
                                         }
                                     }
-
                                     if ($yachtSeason && is_array($season->services)) {
                                         foreach ($season->services as $service) {
-                                            //var_dump($service->amount);exit;
-
                                             $yachtSeasonService = YachtSeasonService::sync(
-                                                $prId,
                                                 $xmlId,
                                                 $service->id, //xml_json_id
                                                 $obj->id, //yacht_id
                                                 $yachtSeason->season_id, //??
-
                                                 $service->serviceId,
                                                 $service->price,
                                                 $service->currency,
                                                 $service->priceMeasureId,
                                                 $service->calculationType,
                                                 $service->obligatory ? 1 : 0,
-
                                                 is_array($service->description) && count($service->description) > 0 ? $service->description['textEN'] : '',
                                                 $service->amount,
-
                                                 isset($service->validForBases) ? 1 : 0,
-
                                                 isset($service->amountIsPercentage) ? ($service->amountIsPercentage ? 1 : 0) : null,
                                                 isset($service->percentageCalculationType) ? $service->percentageCalculationType : null,
                                                 isset($service->validPeriodFrom) ? $service->validPeriodFrom : null,
@@ -358,9 +305,7 @@ class NausysYacht  extends YachtSync
                                             );
                                             if ($yachtSeasonService && isset($service->validForBases) && is_array($service->validForBases)) {
                                                 foreach ($service->validForBases as $base) {
-
                                                     ServicesValidForBases::saveModel(
-                                                        $prId,
                                                         $xmlId,
                                                         $service->serviceId,
                                                         $base,
@@ -378,7 +323,6 @@ class NausysYacht  extends YachtSync
                                 foreach ($obj->standardYachtEquipment as $standardYachtEquipment) {
                                     $comment = is_array($standardYachtEquipment->comment) && isset($standardYachtEquipment->comment['textEN']) ? $standardYachtEquipment->comment['textEN'] : '';
                                     $yachtEquipment = StandardEquipment::sync(
-                                        $prId,
                                         $xmlId,
                                         $obj->id,
                                         $standardYachtEquipment->equipmentId,
@@ -396,7 +340,6 @@ class NausysYacht  extends YachtSync
                                     $comment = is_array($additionalYachtEquipment->comment) && isset($additionalYachtEquipment->comment['textEN']) ? $additionalYachtEquipment->comment['textEN'] : '';
                                     //exit("hello");
                                     $yachtEquipment = AdditionalEquipment::sync(
-                                        $prId,
                                         $xmlId,
                                         $comment,
                                         $additionalYachtEquipment->quantity,
@@ -426,7 +369,6 @@ class NausysYacht  extends YachtSync
                                 foreach ($obj->checkInPeriods as $checkInPeriod) {
                                     //exit("hello");
                                     $check = CheckInPeriod::sync(
-                                        $prId,
                                         $xmlId,
                                         $obj->id,
                                         date('Y-m-d', strtotime($checkInPeriod->dateFrom)),
@@ -1315,7 +1257,7 @@ class NausysYacht  extends YachtSync
         $company = Company::findOne($companyId);
         if ($company) :
             $return = true;
-            self::inactiveRows(intval($prId), intval($xmlId), $company->xml_json_id);
+            self::inactiveRows(intval($xmlId), $company->xml_json_id);
             echo "inactive rows; ";
             Price::inactiveAll($prId, $xmlId, $company->xml_json_id);
             echo "inactive price; ";
@@ -1471,22 +1413,11 @@ class NausysYacht  extends YachtSync
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id, $company_id)
+    private static function inactiveRows(int $xml_id, $company_id)
     {
         $objName = self::$model;
         $object = $objName::findOne(['xml_id' => $xml_id, 'is_archive' => 0, 'is_active' => 1, 'company_id' =>  $company_id]);
         while ($object) {
-            /*
-            $subObjName = self::$subModel;
-            $subObjects = $subObjName::findAll([ 'xml_id' => $xml_id, 'yacht_id' => $obj->xml_json_id]);
-            
-            if (is_array($subObjects)){
-                foreach ($subObjects as $subObject) {
-                    $subObject->is_active = 0;
-                    $subObject->save(false);
-                }
-            }
-        */
             $object->is_active = 0;
             $object->is_new = 0;
             $object->save(0);

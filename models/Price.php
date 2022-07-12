@@ -68,9 +68,7 @@ class Price extends \yii\db\ActiveRecord
         ];
     }
     public static function sync(
-
         $xml_id,
-
         $season_id,
         $date_from,
         $date_to,
@@ -78,12 +76,8 @@ class Price extends \yii\db\ActiveRecord
         $currency,
         $type,
         $yacht_id
-
     ) {
-
         $price = Price::findOne([
-
-
             'xml_id' => $xml_id,
             'season_id' => $season_id,
             'date_from' => $date_from,
@@ -94,19 +88,13 @@ class Price extends \yii\db\ActiveRecord
             'yacht_id' => $yacht_id
         ]);
         if ($price) {
-
             $price->is_active = 1;
             $price->save(0);
-            // var_dump($price);exit ("vok");
             return $price;
         }
-
         $price = new Price();
-
         $price->xml_id = $xml_id;
-
         $price->season_id = $season_id;
-
         $price->date_from = $date_from;
         $price->date_to = $date_to;
         $price->price = $price_;
@@ -114,11 +102,9 @@ class Price extends \yii\db\ActiveRecord
         $price->is_active = 1;
         $price->type = $type;
         $price->yacht_id = $yacht_id;
-
         if ($price->save()) {
             return $price;
         }
-
         return 0;
     }
     public static function inactiveAllYachtPrices($yacht_id)
@@ -131,24 +117,20 @@ class Price extends \yii\db\ActiveRecord
         return 0;
     }
     public static function inactiveAll(
-        $wp_prefix,
         $xml_id,
         $company_id
-
     ) {
         $yachts = Yacht::findAll(['company_id' => $company_id]);
         foreach ($yachts as $yacht) :
             $price = Price::findOne([
-
                 'xml_id' => $xml_id,
                 'is_active' => 1,
                 'yacht_id' => $yacht->xml_json_id
             ]);
             while ($price) {
-                YachtPriceLocation::inactiveAll($wp_prefix, $xml_id, $price->id);
+                YachtPriceLocation::inactiveAll($xml_id, $price->id);
                 $price->is_active = 0;
                 $price->save(0);
-
                 $price = Price::findOne([
                     'xml_id' => $xml_id,
                     'is_active' => 1,
@@ -156,7 +138,6 @@ class Price extends \yii\db\ActiveRecord
                 ]);
             }
         endforeach;
-
         return;
     }
 }

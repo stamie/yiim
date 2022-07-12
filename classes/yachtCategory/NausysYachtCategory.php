@@ -23,7 +23,7 @@ class NausysYachtCategory  extends YachtCategorySync {
             $xmlId = $xml->id;
         }
 
-        parent::__construct($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive);
+        parent::__construct($ID, $xmlId, $xmlJsonId, $name_, $isActive);
         //$obj = new CountrySync($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive);
         //var_dump($this); exit;
 

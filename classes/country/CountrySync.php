@@ -17,11 +17,9 @@ class CountrySync {
     public $name;
     public $is_active;
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $code_, $name_, $isActive = 1)
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $code_, $name_, $isActive = 1)
     {
         $this->id = $ID;
-        
-        
         $this->xml_id = intval($xmlId);
         $this->xml_json_id = intval($xmlJsonId);
         $this->code = $code_;

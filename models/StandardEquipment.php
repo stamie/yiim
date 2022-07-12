@@ -1,9 +1,6 @@
 <?php
-
 namespace app\models;
-
 use Yii;
-
 /**
  * This is the model class for table "standard_equipment".
  *
@@ -28,7 +25,6 @@ class StandardEquipment extends \yii\db\ActiveRecord
     {
         return 'standard_equipment';
     }
-
     /**
      * {@inheritdoc}
      */
@@ -40,7 +36,6 @@ class StandardEquipment extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 100],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -48,10 +43,7 @@ class StandardEquipment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-
-
             'xml_id' => 'Xml ID',
-
             'name' => 'Name',
             'is_active' => 'Is Active',
             'quantity' => 'Quantity',
@@ -61,7 +53,6 @@ class StandardEquipment extends \yii\db\ActiveRecord
         ];
     }
     public static function sync(
-
         $xml_id,
         $yacht_id,
         $equipment_id,
@@ -69,7 +60,6 @@ class StandardEquipment extends \yii\db\ActiveRecord
         $name
     ) {
         $standardEquipment = StandardEquipment::findOne([
-
             'xml_id' => $xml_id,
             'yacht_id' => $yacht_id,
             'equipment_id' => $equipment_id,
@@ -78,27 +68,20 @@ class StandardEquipment extends \yii\db\ActiveRecord
             $standardEquipment->is_active = 1;
             $standardEquipment->quantity = $quantity;
             $standardEquipment->name = $name;
-
             $standardEquipment->save(0);
-
             return $standardEquipment;
         }
-
         $standardEquipment = new StandardEquipment();
         $standardEquipment->equipment_id = $equipment_id;
         $standardEquipment->quantity = $quantity;
         $standardEquipment->name = $name;
         $standardEquipment->xml_id = $xml_id;
         $standardEquipment->yacht_id = $yacht_id;
-
         if ($standardEquipment->save()) {
-
             return $standardEquipment;
         }
-
         return 0;
     }
-
     public static function inactiveAllSeasonInYacht($yacht_id) {
         $standardEquipment = StandardEquipment::findOne([
             'yacht_id' => $yacht_id,

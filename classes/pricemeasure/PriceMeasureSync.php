@@ -26,7 +26,7 @@ class PriceMeasureSync {
      * 
      * PriceMeasure functions 
      */
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $isActive = 1, $name) {
+    public function __construct($ID = null, $xmlId, $xmlJsonId, $isActive = 1, $name) {
         $this->id = $ID;
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
@@ -37,7 +37,6 @@ class PriceMeasureSync {
      * 
      * Additional functions 
      */
-
     public function getRegionId (){
         return $this->country_id;
     }
@@ -73,7 +72,6 @@ class PriceMeasureSync {
         }
         return false;
     }
-
 }
 
 ?>

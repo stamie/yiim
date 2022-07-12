@@ -13,7 +13,7 @@ class NausysBase  extends BaseSync {
     private static $model = 'app\models\Base';
     private static $objectname = 'bases'; //JSON-ban a második paraméter, a státusz után....
 
-    public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlJsonId, $isActive = 1, 
+    public function __construct($ID = null, $xmlJsonId, $isActive = 1, 
                                 $location_id, 
                                 $company_id,
                                 $check_in_time,
@@ -32,7 +32,7 @@ class NausysBase  extends BaseSync {
             $xmlId = $xml->id;
         }
 
-        parent::__construct($ID, $wpId, $wpPrefix, $xmlId, $xmlJsonId, $isActive, 
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive, 
                                 $location_id, 
                                 $company_id,
                                 $check_in_time,
