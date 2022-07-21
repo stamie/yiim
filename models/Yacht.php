@@ -180,7 +180,7 @@ class Yacht extends \yii\db\ActiveRecord
 
             $yachtModel = YachtModel::findOne(['xml_json_id' => $this->yacht_model_id]);
             if ($yachtModel) {
-                $yachtName = str_replace([' ', '+', '.'], '-', strtolower($yachtModel->name));
+                $yachtName = str_replace(['/', ' ', '+', '.'], '-', strtolower($yachtModel->name));
                 while (strpos($yachtName, '--')) {
                     $yachtName = str_replace('--', '-', $yachtName);
                 }
