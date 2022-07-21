@@ -249,9 +249,9 @@ class NausysYacht  extends YachtSync
                                     if ($yachtSeason && isset($season->prices)) {
                                         foreach ($season->prices as $price) {
                                             $date_time = strtotime($price->dateFrom);
-                                            $date_from = date('Y-m-d H:i:s', $date_time);
+                                            $date_from = date(\app\classes\Sync::$dateString, $date_time);
                                             $date_time = strtotime($price->dateTo);
-                                            $date_to   = date('Y-m-d H:i:s', $date_time);
+                                            $date_to   = date(\app\classes\Sync::$dateString, $date_time);
                                             $yachtPrice =  Price::sync(
                                                 $yachtSeason->xml_id,
                                                 $yachtSeason->season_id,
@@ -653,9 +653,9 @@ class NausysYacht  extends YachtSync
                                         foreach ($season->prices as $price) {
 
                                             $date_time = strtotime($price->dateFrom);
-                                            $date_from = date('Y-m-d H:i:s', $date_time);
+                                            $date_from = date(\app\classes\Sync::$dateString, $date_time);
                                             $date_time = strtotime($price->dateTo);
-                                            $date_to   = date('Y-m-d H:i:s', $date_time);
+                                            $date_to   = date(\app\classes\Sync::$dateString, $date_time);
                                             $yachtPrice =  Price::sync(
 
                                                 $yachtSeason->xml_id,

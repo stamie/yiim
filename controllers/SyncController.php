@@ -258,7 +258,7 @@ class SyncController extends \yii\web\Controller
         $request = Yii::$app->request;
         $id = intval($request->get('id'));
         $cashLog = new CashLog();
-        $cashLog->start_datetime = date('Y-m-d H:i:s');
+        $cashLog->start_datetime = date(\app\classes\Sync::$dateString);
         $cashLog->type = 'yacht model cash';
         $cashLog->save();
         $tablePrefix = TablePrefix::findOne($id);
@@ -279,13 +279,13 @@ class SyncController extends \yii\web\Controller
             }
         }
         if ($return) {
-            $d = date('Y-m-d H:i:s');
+            $d = date(\app\classes\Sync::$dateString);
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'OK';
             $cashLog->save(0);
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         }
-        $d = date('Y-m-d H:i:s');
+        $d = date(\app\classes\Sync::$dateString);
         $cashLog->end_datetime = $d;
         $cashLog->ret_value = 'ERROR (SYNCRON)';
         $cashLog->save(0);

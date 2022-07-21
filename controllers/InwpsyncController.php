@@ -73,7 +73,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
         
@@ -121,7 +121,7 @@ const ERROR_PRICEMEASURE = 19;
                 $error[] = self::ERROR_YACHTMODEL;
 
                 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
                 $log->end($end_date, json_encode(['error' => $error]));
 
                 if ($isAjax) {
@@ -138,7 +138,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
             
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             $log->end($end_date, json_encode($error));
 
             if ($isAjax) {
@@ -166,7 +166,7 @@ const ERROR_PRICEMEASURE = 19;
         }
         
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
         
         if (empty($lastLog)) {
@@ -182,7 +182,7 @@ const ERROR_PRICEMEASURE = 19;
                 if (!$this->actionWpsync($id, $p, false, null, $log->id))
                 $error[] = self::ERROR_WPSYNC;
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
                 $log->end($end_date, json_encode(['error' => $error]));
 
                 if ($isAjax) {
@@ -200,7 +200,7 @@ const ERROR_PRICEMEASURE = 19;
 
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             $log->end($end_date, json_encode($error));
 
             if ($isAjax) {
@@ -229,7 +229,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $parentString2 = isset($parentString)?$parentString:'Country Syncron';
         
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -259,7 +259,7 @@ const ERROR_PRICEMEASURE = 19;
                     }
                 }
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
                 if (!$return)
                     $error = ['error' => [self::ERROR_COUNTRY]];
                 $log->end($end_date, json_encode($error), $parentId);
@@ -271,7 +271,7 @@ const ERROR_PRICEMEASURE = 19;
                     return $return;
             }
             $error = json_encode(['error' => [self::AUTH_ERROR]]);
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             $log->end($end_date, $error, $parentId);
 
             if ($isAjax) {
@@ -307,7 +307,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Equipment Category Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -340,7 +340,7 @@ const ERROR_PRICEMEASURE = 19;
                     }
                 }
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error = $return ? json_encode([]) : json_encode(['error' =>[self::ERROR_EQUIPMENTCATEGORY]]);
                 $log->end($end_date, $error, $parentId);
@@ -350,7 +350,7 @@ const ERROR_PRICEMEASURE = 19;
                 } else
                     return  $return;
             } else {
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
                 $log->end($end_date, $error, $parentId);
@@ -385,7 +385,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Yacht Builder Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -418,7 +418,7 @@ const ERROR_PRICEMEASURE = 19;
                     }
                 }
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_YACHTBUILDER]]);
                 $log->end($end_date, $error, $parentId);
@@ -428,7 +428,7 @@ const ERROR_PRICEMEASURE = 19;
                 } else
                     return  $return;
             } else {
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
                 $log->end($end_date, $error, $parentId);
@@ -464,7 +464,7 @@ const ERROR_PRICEMEASURE = 19;
             $this->login($p);
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Engine Builder Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -497,7 +497,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_ENGINEBUILDER]]);
             $log->end($end_date, $error, $parentId);
@@ -508,7 +508,7 @@ const ERROR_PRICEMEASURE = 19;
                 return  $return;
             }
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -542,7 +542,7 @@ const ERROR_PRICEMEASURE = 19;
             $this->login($p);
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Equipment Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -574,7 +574,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_EQUIPMENT]]);
             $log->end($end_date, $error, $parentId);
@@ -585,7 +585,7 @@ const ERROR_PRICEMEASURE = 19;
                 return  $return;
             }
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -618,7 +618,7 @@ const ERROR_PRICEMEASURE = 19;
             $this->login($p);
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Yacht Category Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -651,7 +651,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_YACHTCATEGORY]]);
             $log->end($end_date, $error, $parentId);
@@ -661,7 +661,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -695,7 +695,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Yacht Model Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -728,7 +728,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_YACHTMODEL]]);
             $log->end($end_date, $error, $parentId);
@@ -739,7 +739,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -774,7 +774,7 @@ const ERROR_PRICEMEASURE = 19;
         if ($parentId != 0) {
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Yacht Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -808,7 +808,7 @@ const ERROR_PRICEMEASURE = 19;
                     }
                 }
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
           //  var_dump($return);
                 $error = $return ? json_encode(['not_error']) : json_encode(['error' => [self::ERROR_YACHT]]);
                 $log->end($end_date); //, $error, $parentId);
@@ -819,7 +819,7 @@ const ERROR_PRICEMEASURE = 19;
                     return  $return;
             } else {
             
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
                 $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
                 $log->end($end_date, $error, $parentId);
 
@@ -831,7 +831,7 @@ const ERROR_PRICEMEASURE = 19;
             } 
         } else {
             $error = ['error' => [self::RUNNER_ERROR]];
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             //$log->end($end_date, $error, $parentId);
 
             if ($isAjax) {
@@ -856,7 +856,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Region Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -889,7 +889,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_REGION]]);
             $log->end($end_date, $error, $parentId);
@@ -899,7 +899,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -933,7 +933,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Base Syncron';
      
@@ -969,7 +969,7 @@ const ERROR_PRICEMEASURE = 19;
             }
 
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_BASE]]);
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             $log->end($end_date, $error);
 
             if ($isAjax) {
@@ -978,7 +978,7 @@ const ERROR_PRICEMEASURE = 19;
                 return  $return;
 
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
 
@@ -1011,7 +1011,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Port Syncron';
      
@@ -1046,7 +1046,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_PORT]]);
             $log->end($end_date, $error, $parentId);
@@ -1056,7 +1056,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1089,7 +1089,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Steering Type Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1124,7 +1124,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_STEERINGTYPE]]);
             $log->end($end_date, $error, $parentId);
@@ -1134,7 +1134,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1167,7 +1167,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Sail Type Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1202,7 +1202,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_SAILTYPE]]);
             $log->end($end_date, $error, $parentId);
@@ -1212,7 +1212,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1246,7 +1246,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Service Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1281,7 +1281,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_SERVICE]]);
             $log->end($end_date, $error, $parentId);
@@ -1291,7 +1291,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1325,7 +1325,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Company Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1361,7 +1361,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error = $return ? json_encode([]) : json_encode(['error' => [self::ERROR_COMPANY]]);
             $log->end($end_date, $error, $parentId);
@@ -1371,7 +1371,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1406,7 +1406,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Discount Item Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1441,7 +1441,7 @@ const ERROR_PRICEMEASURE = 19;
                 }
             }
 
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  $return ? json_encode([]) : json_encode(['error' =>[self::ERROR_DISCOUNTITEM]]);
             $log->end($end_date, $error, $parentId);
@@ -1452,7 +1452,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1488,7 +1488,7 @@ const ERROR_PRICEMEASURE = 19;
             $isAutomate = 0;
         }
         
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Session Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1523,7 +1523,7 @@ const ERROR_PRICEMEASURE = 19;
                     }
                 }
 
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error = $return ? json_encode([]) : json_encode(['error' =>[self::ERROR_SEASON]]);
                 $log->end($end_date, $error, $parentId);
@@ -1534,7 +1534,7 @@ const ERROR_PRICEMEASURE = 19;
                 } else
                     return  $return;
             } else {
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
             
                 $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
                 $log->end($end_date, $error, $parentId);
@@ -1571,7 +1571,7 @@ const ERROR_PRICEMEASURE = 19;
         if ($parentId != 0) {
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'Price Measure Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1598,7 +1598,7 @@ const ERROR_PRICEMEASURE = 19;
                     $return = $return && $ret;
                 }
             }
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
             
             $error = $return ? json_encode([]) : json_encode(['error' =>[self::ERROR_PRICEMEASURE]]);
             $log->end($end_date, $error, $parentId);
@@ -1609,7 +1609,7 @@ const ERROR_PRICEMEASURE = 19;
             } else
                 return  $return;
         } else {
-            $end_date = date('Y-m-d H:i:s');
+            $end_date = date(\app\classes\Sync::$dateString);
         
             $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
             $log->end($end_date, $error, $parentId);
@@ -1640,7 +1640,7 @@ const ERROR_PRICEMEASURE = 19;
         if ($parentId != 0) {
             $isAutomate = 0;
         }
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
 
         $parentString2 = isset($parentString)?$parentString:'WordPress Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
@@ -1649,7 +1649,7 @@ const ERROR_PRICEMEASURE = 19;
             $log = SyncronLog::log($startDate, $parentString2, $parentId, $isAutomate);
             
             if (!Yii::$app->user->isGuest) {
-                $date = date('Y-m-d H:i:s');
+                $date = date(\app\classes\Sync::$dateString);
 
                 $ret = Wpsync::savePosts($id);
 
@@ -1660,7 +1660,7 @@ const ERROR_PRICEMEASURE = 19;
                 if ($ret){
                     
                     //exit('cica');
-                    $end_date = date('Y-m-d H:i:s');
+                    $end_date = date(\app\classes\Sync::$dateString);
                     $error = json_encode([]);
                     $log->end($end_date, $error, $parentId);
 
@@ -1669,7 +1669,7 @@ const ERROR_PRICEMEASURE = 19;
                     } else
                         return true;
                 } else {
-                    $end_date = date('Y-m-d H:i:s');
+                    $end_date = date(\app\classes\Sync::$dateString);
                     $error = json_encode([]);
                     
                     $log->end($end_date, $error, $parentId);
@@ -1680,7 +1680,7 @@ const ERROR_PRICEMEASURE = 19;
 
                 }
             } else {
-                $end_date = date('Y-m-d H:i:s');
+                $end_date = date(\app\classes\Sync::$dateString);
                 $error =  json_encode(['error' =>[self::AUTH_ERROR]]);
                 $log->end($end_date, $error, $parentId);
 

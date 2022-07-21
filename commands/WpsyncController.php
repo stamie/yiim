@@ -24,7 +24,7 @@ class WpsyncController extends Controller
 {
     public function actionIndex($id)
     {
-        $date = date('Y-m-d H:i:s');
+        $date = date(\app\classes\Sync::$dateString);
 
         $this->deleteOldYachtPosts();
 
