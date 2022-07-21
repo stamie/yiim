@@ -3,16 +3,10 @@
 namespace app\classes\equipmentCategory;
 
 use app\models\EquipmentCategory as Model;
+use app\classes\Sync;
 
-class EquipmentCategorySync {
+class EquipmentCategorySync extends Sync{
     private static $model = 'app\models\EquipmentCategory';
-    protected $id;
-
-    protected $xml_id;
-    protected $xml_json_id;
-
-    protected $name;
-    protected $is_active;
 
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1)
     {

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 
  * Szinkronizációs kontroll
@@ -8,21 +7,13 @@
  * Év: 2021
  * 
  */
-
 namespace app\classes;
 
-use yii\console\Controller;
-use yii\console\ExitCode;
-use Yii;
-use yii\helpers\Url;
 use app\models\Posts;
 use app\models\TablePrefix;
 use app\models\WpYacht as ModelsWpYacht;
-use app\models\Xml;
 use app\models\Yacht;
 use app\models\WpYacht;
-
-
 class Wpsync
 {
     const DRAFT = 'draft';
@@ -39,13 +30,10 @@ class Wpsync
         $boatDraft = Posts::findOne(['post_title' => self::DRAFT, 'post_type' => self::ELRENDEZES]);
         foreach ($yachtForXmls as $yachtForXml) {
             $array[] = $yachtForXml->id;
-            // var_dump($yachtForXml->id);
             $newBoat = new Posts();
-            //$newBoat->prefix = 'rentx_';
             $newBoat->setAttributes($boatDraft->getAttributes());
             $newBoat->post_parent = 0;
             $newBoat->post_author = 6;
-
             $newBoat->post_type = 'boat';
             $newBoat->post_content = str_replace('boat_id', "$yachtForXml->id", $newBoat->post_content);
             $newBoat->post_name = $yachtForXml->wp_name;
@@ -76,12 +64,7 @@ class Wpsync
                 var_dump($WpYacht);
                 return 0;
             }
-
-            //$yachtForXml = Yacht::find()->where(['not in', 'id', $array])->andWhere(['is_active' => 1])->one();
         }
-
-
-
         return 1;
     }
     public static function deleteOldPosts($id)
@@ -99,30 +82,21 @@ class Wpsync
     }
     public static function saveNewPosts($id)
     {
-        $date = date('Y-m-d H:i:s');
-
         $array = [0];
         $wp_prefix = $id;
-
         $allPosts = WpYacht::findAll(['wp_prefix' => $wp_prefix]);
         foreach ($allPosts as $post) {
             $array[] = $post->id;
         }
         self::deleteOldPosts($wp_prefix);
         $yachtForXml = Yacht::find()->where(['not in', 'id', $array])->andWhere(['is_active' => 1])->one();
-        //Posts::tableName(1);
         $boatDraft = Posts::findOne(['post_title' => self::DRAFT, 'post_type' => self::ELRENDEZES]);
-
-
         while ($yachtForXml) {
             $array[] = $yachtForXml->id;
-            // var_dump($yachtForXml->id);
             $newBoat = new Posts();
-            //$newBoat->prefix = 'rentx_';
             $newBoat->setAttributes($boatDraft->getAttributes());
             $newBoat->post_parent = 0;
             $newBoat->post_author = 6;
-
             $newBoat->post_type = 'boat';
             $newBoat->post_content = str_replace('boat_id', "$yachtForXml->id", $newBoat->post_content);
             $newBoat->post_name = $yachtForXml->wp_name;
@@ -132,7 +106,6 @@ class Wpsync
             $newBoat->to_ping = "_";
             $newBoat->pinged = "_";
             $newBoat->post_content_filtered = "_";
-
             if (!$newBoat->save()) {
                 var_dump($newBoat->errors); exit;
             }
@@ -141,10 +114,8 @@ class Wpsync
             $newBoat->post_modified = date("Y-m-d H:i:s");
             $newBoat->post_modified_gmt = gmdate("Y-m-d H:i:s", strtotime($newBoat->post_modified));
             $newBoat->post_status = 'publish';
-
             $newBoat->save(0);
             $WpYacht = new WpYacht();
-
             $WpYacht->wp_id     = $newBoat->ID;
             $WpYacht->id        = $yachtForXml->id;
             $WpYacht->wp_name   = $yachtForXml->wp_name;
@@ -155,9 +126,6 @@ class Wpsync
             }
             $yachtForXml = Yacht::find()->where(['not in', 'id', $array])->andWhere(['is_active' => 1])->one();
         }
-
-
-
         return 1;
     }
 
@@ -168,10 +136,7 @@ class Wpsync
         if ($tablePrefix)
             $prefix = $tablePrefix->prefix;
         Posts::$prefix = $prefix;
-        $post = Posts::findOne('ID in (select wp_id from wp_yacht where wp_prefix = '.$id.')');
-        //if ($post){
         Posts::deleteAll("post_type like 'boat'");
         WpYacht::deleteAll("wp_prefix = $id");
-        //}
     }
 }

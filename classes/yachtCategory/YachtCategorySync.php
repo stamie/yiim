@@ -4,18 +4,11 @@ namespace app\classes\yachtCategory;
 
 use app\models\DestinationYachtCategory;
 use app\models\YachtCategory;
+use app\classes\Sync;
 
-class YachtCategorySync {
+class YachtCategorySync extends Sync{
     private static $model = 'app\models\YachtCategory';
     
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
-
     /**
      * 
      * Base functions 

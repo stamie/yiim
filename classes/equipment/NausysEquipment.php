@@ -4,7 +4,6 @@ namespace app\classes\equipment;
 
 use app\classes\equipment\EquipmentSync;
 use app\classes\Nausys;
-use app\models\Equipment;
 use app\models\Xml;
 
 class NausysEquipment  extends EquipmentSync
@@ -14,18 +13,6 @@ class NausysEquipment  extends EquipmentSync
     private static $modelName = 'app\classes\equipment\NausysEquipment';
     private static $model = 'app\models\Equipment';
     private static $objectname = 'equipment';
-
-    /*
-    protected $id;
-    protected int $wp_id;
-
-    protected int $wp_prefix;
-    protected int $xml_id;
-    protected int $xml_json_id;
-
-    protected string $name;
-    protected int $is_active;*/
-
 
     public function __construct($ID = null, $xmlJsonId, $name_, $equipment_category, $isActive = 1)
     {

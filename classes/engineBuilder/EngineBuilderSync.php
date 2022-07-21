@@ -3,17 +3,10 @@
 namespace app\classes\engineBuilder;
 
 use app\models\EngineBuilder;
+use app\classes\Sync;
 
-class EngineBuilderSync {
+class EngineBuilderSync extends Sync{
     private static $model = 'app\models\EngineBuilder';
-    
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
 
     /**
      * 

@@ -1,15 +1,10 @@
 <?php
 namespace app\classes\yachtModel;
 use app\models\YachtModel;
-class YachtModelSync {
+use app\classes\Sync;
+
+class YachtModelSync extends Sync{
     private static $model = 'app\models\YachtModel';
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
     protected $category_xml_id;
     protected $builder_xml_id;
     protected $loa;

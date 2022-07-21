@@ -3,16 +3,11 @@
 namespace app\classes\sailtype;
 
 use app\models\SailType;
+use app\classes\Sync;
 
-class SailTypeSync {
+class SailTypeSync extends Sync{
     private static $model = 'app\models\SailType';
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
+
     /**
      * 
      * Base functions 

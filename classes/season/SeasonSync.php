@@ -3,13 +3,10 @@
 namespace app\classes\season;
 
 use app\models\SeasonType;
-
-class SeasonSync {
+use app\classes\Sync;
+class SeasonSync extends Sync{
     private static $model = 'app\models\Season';
-    protected $id;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $is_active;
+
     protected $season;
     protected $charter_company_id;
     protected $date_from;

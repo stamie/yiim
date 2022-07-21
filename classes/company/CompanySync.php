@@ -3,19 +3,10 @@
 namespace app\classes\company;
 
 use app\models\CompanyType;
+use app\classes\Sync;
 
-
-class CompanySync {
+class CompanySync extends Sync{
     private static $model = 'app\models\Company';
-    
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
-
     protected $address;
     protected $city;
     protected $zip;

@@ -10,20 +10,11 @@ class NausysCountry  extends CountrySync {
 
     private static $modelName = 'app\classes\country\NausysCountry';
     private static $resturl   = 'http://ws.nausys.com/CBMS-external/rest/catalogue/v6/countries';
-    
-  //  protected $id;
-  //  public int $wp_id;
-  //public $id;
-    //public int $wp_id = 1;
-
-    public $wp_prefix;
     public $xml_id;
     public $xml_json_id;
-
     public $code;
     public $name;
     public $is_active;
-    
 
     public function __construct($ID = null, $xmlJsonId, $code_, $name_, $isActive = true)
     {
