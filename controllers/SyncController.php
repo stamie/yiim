@@ -93,7 +93,6 @@ class SyncController extends \yii\web\Controller
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      * 
      * ### Yacht építők szinkronja (XX)
@@ -112,11 +111,8 @@ class SyncController extends \yii\web\Controller
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
                     $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
@@ -127,7 +123,6 @@ class SyncController extends \yii\web\Controller
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      * 
      * ### Yacht motor gyártók szinkronja (XX)
@@ -136,7 +131,6 @@ class SyncController extends \yii\web\Controller
     public function actionEnginebuilder($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -159,7 +153,6 @@ class SyncController extends \yii\web\Controller
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      * 
      * ### Felszereltség (equipment) szinkronja (XXXXX)
@@ -321,7 +314,6 @@ class SyncController extends \yii\web\Controller
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      *
      * ### Regiók szinkronja
