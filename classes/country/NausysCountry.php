@@ -66,7 +66,7 @@ class NausysCountry  extends CountrySync {
 
                 $obectes = $obj->countries;
                 
-                self::inactiveCountries(intval($prId), $xmlId);
+                self::inactiveCountries($xmlId);
                 $return = true;
 
                 foreach ($obectes as $obect) {
