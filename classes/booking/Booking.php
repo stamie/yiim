@@ -1,7 +1,5 @@
 <?php
-
 namespace app\classes\booking;
-
 use app\classes\Sync;
 use app\models\Cash;
 use app\models\Service;
@@ -11,7 +9,6 @@ use app\models\YachtDatas3;
 use app\models\YachtModel;
 use app\models\Xml;
 use app\models\YachtSeasonService;
-
 class Booking extends Sync
 {
     const RESULTS_PER_PAGE = 10;
