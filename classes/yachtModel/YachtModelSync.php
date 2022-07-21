@@ -88,9 +88,14 @@ class YachtModelSync {
                 $object->water_tank = $this->water_tank;
                 $object->fuel_tank = $this->fuel_tank;
                 $object->displacement = $this->displacemen;
-                return $object->save();
+                if($object->save())
+                    return 1;
+                else {
+                    var_dump($object->errors);
+                    var_dump($object);
+                }
             }
-        }
+        } 
         return false;
     }
 

@@ -44,7 +44,7 @@ class NausysYachtModel  extends YachtModelSync {
      * 
      * Syncrons function
      */
-    public static function syncronise($prId) {
+    public static function syncronise() {
         $cred = new Nausys();
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, self::$resturl );
@@ -68,7 +68,8 @@ class NausysYachtModel  extends YachtModelSync {
                 self::inactiveRows(intval($xmlId));
                 $return = true;
                 foreach ($objectes as $obj) {
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name, 1, // ->textEN ); //,0 1 );
+                    $objObj = new self::$modelName( null, $xml->id, 
+                    intval($obj->id), $obj->name, 1, // ->textEN ); //,0 1 );
                                                     $obj->yachtCategoryId,
                                                     $obj->yachtBuilderId,
                                                     $obj->loa,
@@ -81,7 +82,8 @@ class NausysYachtModel  extends YachtModelSync {
                                                     $obj->displacement
                                 );
                     $return = $return && $objObj->sync();
-                }
+                } 
+                
                 return $return;
             }
         }
@@ -93,7 +95,7 @@ class NausysYachtModel  extends YachtModelSync {
      */
     private static function inactiveRows(int $xml_id) {
         $objName = self::$model;
-        $objectes = $objName::findAll([ 'xml_id' => $xml_id]);
+        $objectes = $objName::findAll(['xml_id' => $xml_id]);
         foreach ($objectes as $obj)
         {
             $obj->is_active = 0;

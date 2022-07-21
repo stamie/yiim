@@ -68,7 +68,7 @@ class YachtSync {
      * Base functions 
      */
 
-    public function __construct($ID = null, $wp_id = 0, $xml_id, $xmlJson_id, $name_, $isActive = 1,
+    public function __construct($ID = null, $xml_id, $xmlJson_id, $name_, $isActive = 1,
     $company_id,
     $base_id,
     $location_id,
@@ -111,7 +111,6 @@ class YachtSync {
     $max_person
     ) {
         $this->id = $ID;
-        $this->wp_id = $wp_id;
         $this->xml_id = $xml_id;
         $this->xml_json_id = $xmlJson_id;
         $this->name = $name_;
@@ -140,7 +139,7 @@ class YachtSync {
         $this->commission = $commission;
         $this->deposit = $deposit;
         $this->max_discount = $max_discount;
-        $this->four_star_charter = $four_star_charter;
+        $this->four_star_charter = isset($four_star_charter)?$four_star_charter:0;
         $this->charter_type = $charter_type;
         $this->propulsion_type = $propulsion_type;
         $this->internal_use = $internal_use;
@@ -180,6 +179,8 @@ class YachtSync {
                 $object = new self::$model();
                 $object->xml_id = $this->xml_id;
                 $object->xml_json_id = $this->xml_json_id;
+                $object->is_active = 1;
+                $object->is_new = 1;
             }
             if ($object && (empty($object->id) || $object->id>3235)){
                 $object->name = $this->name;

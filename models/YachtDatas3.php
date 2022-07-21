@@ -36,7 +36,7 @@ class YachtDatas3 extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'xml_id', 'xml_json_id', 'commission', 'deposit', 'needs_option_approval', 'can_make_booking_fixed'], 'required'],
+            [['id', 'xml_id', 'xml_json_id', 'deposit', 'can_make_booking_fixed'], 'required'],
             [['id', 'xml_id', 'xml_json_id', 'four_star_charter', 'internal_use', 'launched_year', 'needs_option_approval', 'can_make_booking_fixed'], 'integer'],
             [['commission', 'deposit', 'max_discount'], 'number'],
             [['charter_type'], 'string', 'max' => 200],

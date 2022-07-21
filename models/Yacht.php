@@ -71,8 +71,8 @@ class Yacht extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [[ 'wp_prefix','wp_id', 'xml_id', 'xml_json_id', 'is_active', 'is_archive', 'base_id', 'location_id', 'yacht_model_id', 'company_id', 'cabins', 'cabins_crew', 'berths_cabin', 'berths_salon', 'berths_crew', 'berths_total', 'wc', 'wc_crew', 'build_year', 'engines', 'steering_type_id', 'sail_type_id', 'sail_renewed', 'genoa_type_id', 'genoa_renewed', 'four_star_charter', 'internal_use', 'launched_year', 'needs_option_approval', 'can_make_booking_fixed', 'fuel_tank', 'water_tank', 'number_of_rudder_blades', 'engine_builder_id', 'max_person', 'is_new'], 'integer'],
-            [[ 'wp_prefix', 'xml_id', 'xml_json_id', 'name', 'base_id', 'location_id', 'yacht_model_id', 'company_id', 'draft', 'cabins', 'cabins_crew', 'berths_cabin', 'berths_salon', 'berths_crew', 'berths_total', 'wc', 'wc_crew', 'build_year', 'commission', 'deposit', 'needs_option_approval', 'can_make_booking_fixed', 'fuel_tank', 'water_tank'], 'required'],
+            [['wp_prefix', 'wp_id', 'xml_id', 'xml_json_id', 'is_active', 'is_archive', 'base_id', 'location_id', 'yacht_model_id', 'company_id', 'cabins', 'cabins_crew', 'berths_cabin', 'berths_salon', 'berths_crew', 'berths_total', 'wc', 'wc_crew', 'build_year', 'engines', 'steering_type_id', 'sail_type_id', 'sail_renewed', 'genoa_type_id', 'genoa_renewed', 'four_star_charter', 'internal_use', 'launched_year', 'needs_option_approval', 'can_make_booking_fixed', 'fuel_tank', 'water_tank', 'number_of_rudder_blades', 'engine_builder_id', 'max_person', 'is_new'], 'integer'],
+            [['wp_prefix', 'xml_id', 'xml_json_id', 'name', 'base_id', 'location_id', 'yacht_model_id', 'company_id', 'draft', 'cabins', 'cabins_crew', 'berths_cabin', 'berths_salon', 'berths_crew', 'berths_total', 'wc', 'wc_crew', 'build_year', 'commission', 'deposit', 'needs_option_approval', 'can_make_booking_fixed', 'fuel_tank', 'water_tank'], 'required'],
             [['draft', 'engine_power', 'commission', 'deposit', 'max_discount', 'mast_length', 'third_party_insurance_amount'], 'number'],
             [['name'], 'string', 'max' => 100],
             [['charter_type', 'propulsion_type', 'hull_color', 'wp_name'], 'string', 'max' => 200],
@@ -137,97 +137,99 @@ class Yacht extends \yii\db\ActiveRecord
         ];
     }
 
-    public function saveYacht(){
-        
-
-        if (isset($this->yacht_model_id)){
-
-            $yachtModel = YachtModel::findOne(['xml_json_id'=>$this->yacht_model_id]);
-            
-            $yachtName = str_replace( [' ', '+', '.'], '-', strtolower( $yachtModel->name ));
-            while (strpos ( $yachtName, '--' )){
-                $yachtName = str_replace('--', '-', $yachtName);
+    public function saveYacht()
+    {
+        if (isset($this->yacht_model_id)) {
+            $yachtModel = YachtModel::findOne(['xml_json_id' => $this->yacht_model_id, 'xml_id' => $this->xml_id]);
+            if (empty($yachtModel)) {
+                $ch = curl_init(Yii::$app->params['baseurl'] . "yachtmodel?id={$this->xml_id}");
+                $exec = curl_exec($ch);
+                var_dump("szia exec");
+                var_dump($exec);
+                var_dump("szia exec");
+                curl_close($ch);
+                $yachtModel = YachtModel::findOne(['xml_json_id' => $this->yacht_model_id, 'xml_id' => $this->xml_id]);
+                var_dump($this->yacht_model_id);
+                var_dump($yachtModel);
             }
-            $yachtName = trim( $yachtName, '-');
-
-            $yachtName = $yachtName.'-'.$this->build_year;
-
+            $yachtName = 'boat1';
+            if ($yachtModel) {
+                $yachtName = str_replace([' ', '+', '.'], '-', strtolower($yachtModel->name));
+                while (strpos($yachtName, '--')) {
+                    $yachtName = str_replace('--', '-', $yachtName);
+                }
+            }
+            $yachtName = trim($yachtName, '-');
+            $yachtName = $yachtName . '-' . $this->build_year;
             $this->wp_name = $yachtName;
-            
-
             $allYachts = Yacht::find()->where("wp_name like '$yachtName%'")->all();
-
-            if (is_array($allYachts) && count($allYachts)>0) {
-
+            if (is_array($allYachts) && count($allYachts) > 0) {
                 $number = count($allYachts);
-                $this->wp_name = str_replace(['(', ')', ','], ['', '', ''], $yachtName).'-'.$number;
-
+                $this->wp_name = str_replace(['(', ')', ','], ['', '', ''], $yachtName) . '-' . $number;
             }
-
             $this->save(0);
-
             return $this;
-
         }
         return false;
     }
 
-    public function refreshWpName(){
-        
-        if (empty($this->wp_name)){
+    public function refreshWpName()
+    {
 
-            $yachtModel = YachtModel::findOne(['xml_json_id'=>$this->yacht_model_id]);
+        if (empty($this->wp_name)) {
+
+            $yachtModel = YachtModel::findOne(['xml_json_id' => $this->yacht_model_id]);
             if ($yachtModel) {
-                $yachtName = str_replace( [' ', '+', '.'], '-', strtolower( $yachtModel->name ));
-                while (strpos ( $yachtName, '--' )){
+                $yachtName = str_replace([' ', '+', '.'], '-', strtolower($yachtModel->name));
+                while (strpos($yachtName, '--')) {
                     $yachtName = str_replace('--', '-', $yachtName);
                 }
-                $yachtName = trim( $yachtName, '-');
+                $yachtName = trim($yachtName, '-');
 
-                $yachtName = $yachtName.'-'.$this->build_year;
+                $yachtName = $yachtName . '-' . $this->build_year;
 
                 $this->wp_name = $yachtName;
 
                 $allYachts = Yacht::find()->where("wp_name like '$yachtName%'")->all();
 
-                if (is_array($allYachts) && count($allYachts)>0) {
+                if (is_array($allYachts) && count($allYachts) > 0) {
 
                     $number = count($allYachts);
-                    $this->wp_name = $yachtName.'-'.$number;
-
+                    $this->wp_name = $yachtName . '-' . $number;
                 }
 
                 $this->save(0);
 
                 return $this;
             }
-
         }
 
         return false;
     }
 
-    public function getPostTitle() {
+    public function getPostTitle()
+    {
 
-            $yachtModel = YachtModel::findOne(['xml_json_id'=>$this->yacht_model_id]);
-            if ($yachtModel) {
-                $yachtName = $yachtModel->name;
-                while (strpos ( $yachtName, '--' )){
-                    $yachtName = str_replace('--', '-', $yachtName);
-                }
-                $yachtName = trim( $yachtName, '-');
-
-                $yachtName = $yachtName.' ('.$this->build_year.')';
-
-                return $yachtName;
+        $yachtModel = YachtModel::findOne(['xml_json_id' => $this->yacht_model_id]);
+        if ($yachtModel) {
+            $yachtName = $yachtModel->name;
+            while (strpos($yachtName, '--')) {
+                $yachtName = str_replace('--', '-', $yachtName);
             }
+            $yachtName = trim($yachtName, '-');
+
+            $yachtName = $yachtName . ' (' . $this->build_year . ')';
+
+            return $yachtName;
+        }
         return '';
     }
 
-    public static function archive() {
+    public static function archive()
+    {
         $yacht = Yacht::findOne(['is_active' => 0, 'is_archive' => 0]);
 
-        while ($yacht){
+        while ($yacht) {
             $yacht->is_archive = 1;
             $yacht->save(0);
             $yacht = Yacht::findOne(['is_active' => 0, 'is_archive' => 0]);

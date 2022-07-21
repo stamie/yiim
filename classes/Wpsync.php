@@ -50,12 +50,13 @@ class Wpsync
             $newBoat->post_content = str_replace('boat_id', "$yachtForXml->id", $newBoat->post_content);
             $newBoat->post_name = $yachtForXml->wp_name;
             $newBoat->post_title = $yachtForXml->getPostTitle();
+            $newBoat->post_title = isset($newBoat->post_title)?$newBoat->post_title : $yachtForXml->wp_name;
             $newBoat->post_excerpt = $newBoat->post_title;
             $newBoat->to_ping = "_";
             $newBoat->pinged = "_";
             $newBoat->post_content_filtered = "_";
 
-            if (!$newBoat->save(1)) {
+            if (!$newBoat->save(0)) {
                 var_dump($newBoat);
             }
             $newBoat->guid = str_replace("p=$boatDraft->ID", "p=$newBoat->ID", $newBoat->guid);
@@ -126,6 +127,7 @@ class Wpsync
             $newBoat->post_content = str_replace('boat_id', "$yachtForXml->id", $newBoat->post_content);
             $newBoat->post_name = $yachtForXml->wp_name;
             $newBoat->post_title = $yachtForXml->getPostTitle();
+            $newBoat->post_title = isset($newBoat->post_title)?$newBoat->post_title : $yachtForXml->wp_name;
             $newBoat->post_excerpt = $newBoat->post_title;
             $newBoat->to_ping = "_";
             $newBoat->pinged = "_";
@@ -166,7 +168,7 @@ class Wpsync
         if ($tablePrefix)
             $prefix = $tablePrefix->prefix;
         Posts::$prefix = $prefix;
-        $post = Posts::findOne('ID in (select wp_id from wp_yacht)');
+        $post = Posts::findOne('ID in (select wp_id from wp_yacht where wp_prefix = '.$id.')');
         //if ($post){
         Posts::deleteAll("post_type like 'boat'");
         WpYacht::deleteAll("wp_prefix = $id");
