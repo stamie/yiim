@@ -8,7 +8,6 @@
  * 
  */
 namespace app\classes;
-
 use app\models\Posts;
 use app\models\TablePrefix;
 use app\models\WpYacht as ModelsWpYacht;
@@ -20,13 +19,9 @@ class Wpsync
     const ELRENDEZES = 'boat-template';
     public static function savePosts($id)
     {
-        $date = date('Y-m-d H:i:s');
-
         self::deleteOldYachtPosts($id);
         $array = [0];
-
         $yachtForXmls = Yacht::find()->andWhere(['is_active' => 1])->all();
-        //Posts::tableName(1);
         $boatDraft = Posts::findOne(['post_title' => self::DRAFT, 'post_type' => self::ELRENDEZES]);
         foreach ($yachtForXmls as $yachtForXml) {
             $array[] = $yachtForXml->id;
@@ -43,7 +38,6 @@ class Wpsync
             $newBoat->to_ping = "_";
             $newBoat->pinged = "_";
             $newBoat->post_content_filtered = "_";
-
             if (!$newBoat->save(0)) {
                 var_dump($newBoat);
             }
@@ -52,10 +46,8 @@ class Wpsync
             $newBoat->post_modified = date("Y-m-d H:i:s");
             $newBoat->post_modified_gmt = gmdate("Y-m-d H:i:s", strtotime($newBoat->post_modified));
             $newBoat->post_status = 'publish';
-
             $newBoat->save(0);
             $WpYacht = new WpYacht();
-
             $WpYacht->wp_id     = $newBoat->ID;
             $WpYacht->id        = $yachtForXml->id;
             $WpYacht->wp_name   = $yachtForXml->wp_name;

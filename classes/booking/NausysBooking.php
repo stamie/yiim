@@ -25,16 +25,13 @@ use LiteSpeed\Data;
 
 class NausysBooking extends Booking
 {
-
     private static $freeYachtsSearcUrl = 'http://ws.nausys.com/CBMS-external/rest/yachtReservation/v6/freeYachtsSearch';
     private static $freeYachtsUrl      = 'http://ws.nausys.com/CBMS-external/rest/yachtReservation/v6/freeYachts';
     private static $createClient       = 'http://ws.nausys.com/CBMS-external/rest/booking/v6/createInfo/';
     private static $createOption       = 'http://ws.nausys.com/CBMS-external/rest/booking/v6/createOption/';
     private static $refreshOption      = 'http://ws.nausys.com/CBMS-external/rest/yachtReservation/v6/reservations';
-
     private static function isChecked(int $from, CheckInPeriod $checkInPeriod)
     {
-
         $day = intval(getdate($from)['wday']);
         if ($day === 1 && $checkInPeriod->check_in_monday === 1) {
             return 1;
@@ -66,7 +63,6 @@ class NausysBooking extends Booking
         $date_to   = strtotime($to);
         $xml = XmlModel::find()->where(['slug' => 'nausys'])->one();
         $xml_id = $xml ? $xml->id : 0;
-
         $yacht = Yacht::findOne($yachtId);
         $next_from = $date_from;
         $next_to   = $date_to;
@@ -86,7 +82,6 @@ class NausysBooking extends Booking
                         if ($checkInPeriod && $d = self::isChecked($next_from, $checkInPeriod)) {
                             if ($d === 1) {
                                 $obj = self::freeYachtsConnect($from1, $to1, $yachts);
-
                                 if (isset($obj) && isset($obj->freeYachts) && is_array($obj->freeYachts) && count($obj->freeYachts) > 0) {
                                     return $obj;
                                 }
@@ -150,21 +145,17 @@ class NausysBooking extends Booking
                 'ignoreOptions' => true,
             ]
         );
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::$freeYachtsUrl);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $authAndPostFields);
-
         $header = array('Content-Type: application/json');
-
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $exec = curl_exec($ch);
         curl_close($ch);
         $exec = json_decode($exec);
         if ($exec->status == 'OK') {
-
             return $exec;
         }
         return null;
@@ -189,11 +180,9 @@ class NausysBooking extends Booking
                         }
                     }
                 }
-
                 if ($theYacht) {
                     $userPrice = floatval($yacht->price->clientPrice);
                     $listPrice = floatval($yacht->price->priceListPrice);
-
                     $location = intval($yacht->locationFromId);
                     $city = PortsInCities::findOne(['xml_json_port_id' => $location, 'xml_id' => $xml_id]);
                     $cityNameFrom = '';
@@ -204,7 +193,6 @@ class NausysBooking extends Booking
                         else
                             $cityNameFrom = '';
                     }
-
                     $location = intval($yacht->locationToId);
                     $city = PortsInCities::findOne(['xml_json_port_id' => $location, 'xml_id' => $xml_id]);
                     $cityNameTo = '';
@@ -215,7 +203,6 @@ class NausysBooking extends Booking
                         else
                             $cityNameTo = '';
                     }
-
                     $yachtProperties = [
                         'id' => $theYacht->id,
                         'date_from' => $yacht->periodFrom,
@@ -231,24 +218,20 @@ class NausysBooking extends Booking
                         'deposit' => isset($yacht->price->depositAmount) ? $yacht->price->depositAmount : null,
                         'depositWhenInsuredAmount' => isset($yacht->price->depositWhenInsuredAmount) ? $yacht->price->depositWhenInsuredAmount : null,
                         'status'  => $yacht->status,
-
                     ];
                     if (!$is_sale || ($userPrice < $listPrice)) {
                         $list[] = $yachtProperties;
                         $Ids[] = $yachtProperties['id'];
-                        
                     }
                 }
             }
         }
-
         return ['list' => $list, 'Ids' => $Ids];
     }
 
     private static function onDay($from, $to, $page = 1, $resultsPerPage = self::RESULTS_PER_PAGE)
     {
         $cred   = new Nausys();
-        
         $ignoreOptions = false;
         $resultsPerPage2 = 0;
         if ($page == 1) {
@@ -262,26 +245,22 @@ class NausysBooking extends Booking
                 'periodFrom'     => $from,
                 'periodTo'       => $to,
                 'resultsPerPage' => $resultsPerPage2,
-                'resultsPage'    => 1
-            ] + ['ignoreOptions' => $ignoreOptions]
+                'resultsPage'    => 1,
+                'ignoreOptions' => $ignoreOptions]
         );
-
         return $authAndPostFields;
     }
-
     private static function arrayInsert($original, $inserted, $pos)
     {
         $or = $original;
         $ins = [$inserted];
         array_splice($or, $pos, 0, $ins);
-
         return $or;
     }
     private static function priceInsert($objList, $obj, $ascOrDesc)
     {
         $objList2 = $objList;
         $objPrice = floatval($obj["priceForUser"]);
-
         for ($index = 0; $index < count($objList2); $index++) {
             $price = floatval($objList2[$index]["priceForUser"]);
             if ($ascOrDesc == 1 && $objPrice > $price) {
@@ -293,16 +272,12 @@ class NausysBooking extends Booking
             }
         }
         $objList2[] = $obj;
-
         return $objList2;
     }
-
-
     private static function arrayMerge($obj1, $obj2, $xml_id, $orderBy = 2, $ascOrDesc = 0)
     {
         $objList = $obj1['list'];
         $objIds = $obj1['Ids'];
-
         if (isset($obj2['list']) && is_array($obj2['list'])) {
             foreach ($obj2['list'] as $key => $yachtProperties) {
                 if (isset($yachtProperties['id']) && is_array($objIds) && !in_array($yachtProperties['id'], $objIds)) {
@@ -317,19 +292,16 @@ class NausysBooking extends Booking
                 }
             }
         }
-
         return ['list' => $objList, 'Ids' => $objIds];
     }
     static function freeYachtsSearch($date_from, $duration, $flexibility = "on_day", $attributes, $xml_id, $is_sale = 0, $orderBy = 2, $ascOrDesc = 0)
     {
         $date_to = strtotime($date_from) + (intval($duration) * self::DAY_MINUTE);
-
         $to = date("d.m.Y", $date_to);
         $from = date("d.m.Y", strtotime($date_from));
         $authAndPostFields = [];
         $page = 1;
         $resultsPerPage = count(Yacht::find()->all()) + 100000;
-  
         $Obj = array('list' => [], 'Ids' => [], 'count' => null);
         $order = [];
         if ($orderBy > 2) {
@@ -338,7 +310,6 @@ class NausysBooking extends Booking
                 'desc'    => $ascOrDesc
             ];
         }
-
         $authAndPostFields[] = self::onDay($from, $to, $page, $resultsPerPage);
         foreach ($authAndPostFields as $auth) {
             $ch = curl_init();
@@ -364,14 +335,12 @@ class NausysBooking extends Booking
             } else {
                 break;
             }
-         
         }
         $count = is_array($Obj['Ids']) ? count($Obj['Ids']) : 0;
         return isset($Obj) ? $Obj : ['list' => [], 'count' => $count];
     }
     static function freeYachtsSearch2($date_from, $duration, $flexibility = "on_day", $attributes, $xml_id, $is_sale = 0, $orderBy = 2, $ascOrDesc = 0)
     {
-        $date_to = strtotime($date_from) + (intval($duration) * self::DAY_MINUTE);
         $ports   = (is_array($attributes['ports']) && count($attributes['ports']) > 0) ? $attributes['ports'] : null;
         $from = date("Y-m-d", strtotime($date_from));
         $authAndPostFields = [];
@@ -400,9 +369,7 @@ class NausysBooking extends Booking
                 $authAndPostFields[] = $from;
                 break;
         }
-
         $Obj = array('list' => [], 'Ids' => [], 'count' => null);
-        
         foreach ($authAndPostFields as $auth) {
             $date_from_ = $auth;
             if (!$date_from_) {
@@ -418,7 +385,6 @@ class NausysBooking extends Booking
             if (isset($attributes['args']['models']) && $attributes['args']['models'] != '-') {
                 $yachtCashes->andWhere(["model" => $attributes['args']['models']]);
             }
-
             if (is_array($attributes['yacht_categories']) && count($attributes['yacht_categories']) > 0) {
                 $yachtCategories = $attributes['yacht_categories'];
                 $yachtCashes->andWhere(["category" => $yachtCategories]);
@@ -450,7 +416,6 @@ class NausysBooking extends Booking
                 $where = trim($where, "or ").")"; // var_dump($where);
                 $yachtCashes->andWhere($where);
             }
-
             $returnCount = count($Obj['list']); // ($Obj);
             //Optional extras szerinti szűrés ha van
             // lefejlesztve NAUSYS Bareboat or creawed De a Cabin Flottilla Powered Berth All incluive nincs lefejlesztve!!!!
@@ -459,66 +424,55 @@ class NausysBooking extends Booking
                 $Obj = parent::search_boats_with_service_types($attributes['args']['selectedServiceTypes'], $Obj);
             }
             */
-             
             $Obj['count'] = $yachtCashes->count();
             $yachtCashes->limit(self::RESULTS_PER_PAGE)->offset(($page - 1) * self::RESULTS_PER_PAGE);
             switch ($orderBy) {
-
                 case 2:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['user_price' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['user_price' => SORT_DESC]);
-
                     break;
                 case 3:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['length' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['length' => SORT_DESC]);
-
                     break;
                 case 4:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['cabins' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['cabins' => SORT_DESC]);
-
                     break;
                 case 5:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['builder_year' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['builder_year' => SORT_DESC]);
-
                     break;
                 case 6:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['beds' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['beds' => SORT_DESC]);
-
                     break;
                 case 7:
                     if (!$ascOrDesc)
                         $yachtCashes->orderBy(['capacity' => SORT_ASC]);
                     else
                         $yachtCashes->orderBy(['capacity' => SORT_DESC]);
-
                     break;
                 default:
                     $yachtCashes->orderBy(['user_price' => SORT_ASC]);
                     break;
             }
             $yachtesFromCash = $yachtCashes->all();
-
             foreach ($yachtesFromCash as $value) {
                 $Obj['list'][] = json_decode($value->json_value, true);
             }
         }
-
         $Obj['perPage'] = self::RESULTS_PER_PAGE;
-
         return isset($Obj) ? $Obj : ['list' => [], 'count' => null];
     }
     public static function yachtSearch($boat_id, $date_from, $date_to, $xml_id)
@@ -533,7 +487,6 @@ class NausysBooking extends Booking
         }
         return array();
     }
-
     protected static function createClient($user_id, $client, $from, $to, $yachtId)
     {
         $cred    = new Nausys();
@@ -546,34 +499,26 @@ class NausysBooking extends Booking
                 'client'     => $client,
                 'credentials' => $cred->getCredentials(),
                 'yachtID'    => $yachtId,
-
                 'periodFrom' => $from2,
                 'periodTo'   => $to2,
                 "onlinePayment" => "false"
-
             ]
         );
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::$createClient);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $authAndPostFields);
-
         $header = array('Content-Type: application/json');
-
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $exec = curl_exec($ch);
         curl_close($ch);
         $exec = json_decode($exec, true);
         if (isset($exec["status"]) && $exec["status"] == 'OK') {
-
             return $exec;
         }
-        //BoatOption::createWrongOptionNausys($user_id, $client, $from, $to, $yachtId);
         return null;
     }
-
     public static function createOption($user_id, $client, $from, $to, $yacht, $wp_prefix, $message = '', $ignoreOptions = '0')
     {
         $cred    = new Nausys();
@@ -583,16 +528,13 @@ class NausysBooking extends Booking
             $execArray["credentials"] = $cred->getCredentials();
             unset($execArray["status"]);
             $execArray["createWaitingOption"] = ($execArray["waitingForOption"] == true && $ignoreO) ? "true" : "false";
-            //$execArray["createWaitingOption"] = $ignoreO;
             $authAndPostFields = json_encode($execArray);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, self::$createOption);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $authAndPostFields);
-
             $header = array('Content-Type: application/json');
-
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $exec = curl_exec($ch);
             curl_close($ch);
@@ -604,31 +546,25 @@ class NausysBooking extends Booking
         BoatOption::createWrongOptionNausys($user_id, $client, $from, $to, $yacht->id, $wp_prefix);
         return null;
     }
-
     public static function refreshBooking(int $xml_id)
     {
         $cred = new Nausys();
         $date = date('Y-m-d', strtotime('-1 month'));
         $needRefreshes = BoatOption::find()->where("period_from > '{$date}' and xml_json_id is not null")->all();
         $needRefreshArray = [];
-
         foreach ($needRefreshes as $needRefresh) {
             $needRefreshArray[] = $needRefresh->xml_json_id;
         }
-
         $execArray = [];
         $execArray["credentials"] = $cred->getCredentials();
         $execArray["reservations"] = $needRefreshArray;
         $authAndPostFields = json_encode($execArray);
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::$refreshOption);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $authAndPostFields);
-
         $header = array('Content-Type: application/json');
-
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $exec = curl_exec($ch);
         curl_close($ch);
@@ -640,7 +576,7 @@ class NausysBooking extends Booking
                 $boatOption = BoatOption::findOne(["xml_json_id" => $id]);
                 if ($boatOption && $boatOption->reservation_status !== $reservationStatus) {
                     $boatOption->reservation_status = $reservationStatus;
-                    $boatOption->modify_date        = date('Y-m-d H:i:s');
+                    $boatOption->modify_date        = date(self::$dateString);
                     $boatOption->save(0);
                 }
             }
@@ -648,33 +584,27 @@ class NausysBooking extends Booking
         }
         return 0;
     }
-
     static function threeFreeYachtsSearch($xml_id, $yacht_category, $ports = null, $is_sale = 1)
     {
         $yachtCategoriesStrings  = ["Sailing yacht", "Motor yacht", "Motor boat", "Catamaran", "Luxury sailing yacht"];
         $attributes = [];
         $yachtCategories = YachtCategory::find()->where(["name" => $yachtCategoriesStrings])->all();
-
         foreach ($yachtCategories as $yachtCat) {
             if ($yachtCat->name == $yacht_category) {
                 $attributes['yacht_categories'] = [$yachtCat->name];
                 if (is_array($ports) && count($ports))
                     $attributes['ports'] = $ports;
-
                 $duration = 7;
                 $index = -1;
                 $return = null;
                 while ($index < 20) {
                     $index++;
                     $start_from = self::START_FROM + $index;
-
                     $date_from = date("Y-m-d", strtotime("next saturday"));
                     $date_from = strtotime($date_from) + (7 * $start_from * self::DAY_MINUTE);
-
                     $from = date("Y-m-d", $date_from);
                     $Obj = array('list' => [], 'Ids' => [], 'count' => null);
                     $count = 0;
-
                     $Obj = self::freeYachtsSearch2($from, $duration, "on_day", $attributes, $xml_id); //var_dump($Obj); // exit;
                     $count = (isset($Obj['list']) && is_array($Obj['list'])) ? count($Obj['list']) : 0;
                     var_dump($count); //exit;

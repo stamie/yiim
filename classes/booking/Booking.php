@@ -2,6 +2,7 @@
 
 namespace app\classes\booking;
 
+use app\classes\Sync;
 use app\models\Cash;
 use app\models\Service;
 use app\models\Yacht;
@@ -11,7 +12,7 @@ use app\models\YachtModel;
 use app\models\Xml;
 use app\models\YachtSeasonService;
 
-class Booking
+class Booking extends Sync
 {
     const RESULTS_PER_PAGE = 10;
     const DAY_MINUTE = 86400;
@@ -48,14 +49,11 @@ class Booking
 
     protected function search_boats_with_service_types(string $service_types, $Obj)
     {
-
         $Ids = isset($Obj["Ids"]) ? $Obj["Ids"] : null;
         if (is_array($Ids) && count($Ids) > 0) {
-
             $yachtDatas = [];
             $list = [];
             $ids = array();
-
             switch ($service_types) {
                 case 'All':
                     return $Ids;
@@ -83,22 +81,17 @@ class Booking
                             $serviceXmlJsonIds[] = $service->xml_json_id;
                         }
                         $yachtSeasonServices = YachtSeasonService::find()->where(['service_id' => $serviceXmlJsonIds,'yacht_id' => $yachtXmlJsonIds, 'xml'=> $Xml->id])->all();
-                        
                         $yachtXmlJsonIds = [];
                         foreach ($yachtSeasonServices as $yachtSeasonService) {
                             $yachtXmlJsonIds[] = $yachtSeasonService->yacht_id;
-
                         }
-                        
                         $yachtDatas1 = YachtDatas3::find()->where(['xml_json_id' => $yachtXmlJsonIds, 'xml_id' => $Xml->id])->all();
                         $yachtDatas = array_merge($yachtDatas, $yachtDatas1);
                     }
-
                     break;
                 default:
                     return $Obj;
             }
-            //var_dump($yachtDatas);
             $Ids2 = [];
             if (is_array($yachtDatas)) {
                 foreach ($yachtDatas as $id) {
@@ -112,14 +105,12 @@ class Booking
                     }
                 }
             }
-
             return ["list" => $list, "Ids" => $Ids2];
         }
         return ["list" => [], "Ids" => []];
     }
     protected function discounts($discounts, $Obj)
     {
-
         $Ids = isset($Obj["Ids"]) ? $Obj["Ids"] : null;
         if (is_array($Ids) && count($Ids) > 0) {
 
@@ -129,7 +120,6 @@ class Booking
             foreach ($Obj['list'] as $key => $value) {
                 $yacht = Yacht::findOne($value["id"]);
                 if ($yacht && $yacht->xml_id == 1) {
-
                     $discountsOfYacht = $value['discounts'];
                     foreach ($discountsOfYacht as $discount) {
                         if (isset($discount['discountItemId'])) {
@@ -146,14 +136,12 @@ class Booking
                     }
                 }
             }
-            //var_dump($yachtDatas);
             $Ids2 = [];
             if (is_array($yachtDatas)) {
                 foreach ($yachtDatas as $id) {
                     $Ids2[] = $id->id;
                 }
             }
-
             return ["list" => $list, "Ids" => $Ids2];
         }
         return ["list" => [], "Ids" => []];
@@ -167,7 +155,6 @@ class Booking
             $return = json_decode($cash->json_value, true);
             return $return;
         }
-
         return null;
     }
 }
