@@ -4,22 +4,15 @@ use app\models\SteeringType;
 use app\classes\Sync;
 class SteeringTypeSync extends Sync{
     private static $model = 'app\models\SteeringType';
+    protected $name;
     /**
      * 
      * Base functions 
      */
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1) {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
     }
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * Syncrons function

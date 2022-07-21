@@ -8,7 +8,7 @@ use app\classes\Sync;
 
 class YachtSync extends Sync{
     private static $model = 'app\models\Yacht';
-     
+    protected $name;
     protected $company_id;
     protected $base_id;
     protected $location_id;
@@ -36,9 +36,6 @@ class YachtSync extends Sync{
     protected $four_star_charter;
     protected $charter_type;
     protected $propulsion_type;
-
-    
-
         protected $internal_use;
         protected $launched_year;
         protected $needs_option_approval;
@@ -52,15 +49,11 @@ class YachtSync extends Sync{
         protected $third_party_insurance_amount;
         protected $third_party_insurance_currency;
         protected $max_person;
-
         protected $wp_name;
-    
-
     /**
      * 
      * Base functions 
      */
-
     public function __construct($ID = null, $xml_id, $xmlJson_id, $name_, $isActive = 1,
     $company_id,
     $base_id,
@@ -103,11 +96,8 @@ class YachtSync extends Sync{
     $third_party_insurance_currency,
     $max_person
     ) {
-        $this->id = $ID;
-        $this->xml_id = $xml_id;
-        $this->xml_json_id = $xmlJson_id;
+        parent::__construct($ID, $xml_id, $xmlJson_id, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
         $this->company_id = $company_id;
         $this->base_id = $base_id;
         $this->location_id = $location_id;
@@ -149,12 +139,6 @@ class YachtSync extends Sync{
         $this->third_party_insurance_currency =$third_party_insurance_currency;
         $this->max_person = $max_person;
     }
-
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * _syncrons function

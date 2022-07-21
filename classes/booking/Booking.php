@@ -46,7 +46,6 @@ class Booking extends Sync
             'AllInclusive'  => array('All inclusive', 'All inclusive alcoholic package', 'All inclusive children', 'All inclusive domestic non alcoholic package', 'All inclusive domestic package', 'All inclusive package', 'All inclusive surcharge for two/more weeks'),
         ),
     );
-
     protected function search_boats_with_service_types(string $service_types, $Obj)
     {
         $Ids = isset($Obj["Ids"]) ? $Obj["Ids"] : null;
@@ -59,7 +58,6 @@ class Booking extends Sync
                     return $Ids;
                 case 'Bareboat':
                 case 'Crewed':
-                    //$sql = "SELECT id from yacht_datas3 where charter_type like upper('{$service_types}') and id {$list}";
                     $yachtDatas1 = YachtDatas3::find()->where(['id' => $Ids])->andWhere("charter_type like upper('$service_types')")->all();
                     $yachtDatas = array_merge($yachtDatas, $yachtDatas1);
                     break;
@@ -113,10 +111,8 @@ class Booking extends Sync
     {
         $Ids = isset($Obj["Ids"]) ? $Obj["Ids"] : null;
         if (is_array($Ids) && count($Ids) > 0) {
-
             $yachtDatas = [];
             $list = [];
-            $ids = array();
             foreach ($Obj['list'] as $key => $value) {
                 $yacht = Yacht::findOne($value["id"]);
                 if ($yacht && $yacht->xml_id == 1) {
@@ -146,7 +142,6 @@ class Booking extends Sync
         }
         return ["list" => [], "Ids" => []];
     }
-
     protected function findOnTheCash($date_from, $duration)
     {
         $return = [];

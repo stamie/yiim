@@ -7,7 +7,7 @@ use app\classes\Sync;
 
 class EngineBuilderSync extends Sync{
     private static $model = 'app\models\EngineBuilder';
-
+    protected $name;
     /**
      * 
      * Base functions 
@@ -15,27 +15,13 @@ class EngineBuilderSync extends Sync{
 
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1)
     {
-        $this->id = $ID;
-        
-        
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
-        
-
     }
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * Syncrons function
      */
-    
-     
     public function sync () {
         if ($this) {
             $condition = [

@@ -8,6 +8,7 @@ use app\classes\Sync;
 
 class PortSync extends Sync{
     private static $model = 'app\models\Port';
+    protected $name;
     protected $region_id;
     protected  $xml_long;
     protected  $xml_lat;
@@ -25,11 +26,8 @@ class PortSync extends Sync{
                                 $wp_long = null,
                                 $wp_lat = null
     ) {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
         $this->region_id = intval($region_id);
         $this->xml_long = floatval($xml_long);
         $this->xml_lat = floatval($xml_lat);
