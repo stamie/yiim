@@ -7,26 +7,16 @@ use app\classes\Sync;
 
 class YachtBuilderSync extends Sync{
     private static $model = 'app\models\YachtBuilder';
-
+    protected $name;
     /**
      * 
      * Base functions 
      */
-
     public function __construct($ID = null, $wpId = 0, $wpPrefix, $xmlId, $xmlJsonId, $name_, $isActive = 1)
     {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
     }
-
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * Syncrons function
@@ -52,7 +42,5 @@ class YachtBuilderSync extends Sync{
         }
         return false;
     }
-
 }
-
 ?>

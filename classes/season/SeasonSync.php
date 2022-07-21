@@ -6,7 +6,6 @@ use app\models\SeasonType;
 use app\classes\Sync;
 class SeasonSync extends Sync{
     private static $model = 'app\models\Season';
-
     protected $season;
     protected $charter_company_id;
     protected $date_from;
@@ -22,21 +21,13 @@ class SeasonSync extends Sync{
         $date_to,
         $deafult_season = 1
     ) {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->season = $name_;
-        $this->is_active = intval($isActive);
         $this->charter_company_id = $charter_company_id;
         $this->date_from = $date_from;
         $this->date_to = $date_to;
         $this->deafult_season = $deafult_season;
     }
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * Syncrons function

@@ -5,7 +5,7 @@ use app\classes\Sync;
 
 class EquipmentSync extends Sync{
     private static $model = 'app\models\Equipment';
-    
+    protected $name;
     protected $equipment_category_json_id;
     /**
      * 
@@ -14,11 +14,8 @@ class EquipmentSync extends Sync{
 
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $equipment_category_json_id, $isActive = 1)
     {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
         $this->equipment_category_json_id = intval($equipment_category_json_id);
     }
     /**

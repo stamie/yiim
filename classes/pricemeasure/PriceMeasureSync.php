@@ -8,6 +8,7 @@ use app\classes\Sync;
 
 class PriceMeasureSync extends Sync{
     private static $model = 'app\models\PriceMeasure';
+    protected $name;
     protected $location_id;
     protected $company_id;
     protected $check_in_time;
@@ -21,11 +22,8 @@ class PriceMeasureSync extends Sync{
      * PriceMeasure functions 
      */
     public function __construct($ID = null, $xmlId, $xmlJsonId, $isActive = 1, $name) {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name;
-        $this->is_active = intval($isActive);
     }
     /**
      * 

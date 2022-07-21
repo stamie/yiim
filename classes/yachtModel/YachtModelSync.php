@@ -2,9 +2,9 @@
 namespace app\classes\yachtModel;
 use app\models\YachtModel;
 use app\classes\Sync;
-
 class YachtModelSync extends Sync{
     private static $model = 'app\models\YachtModel';
+    protected $name;
     protected $category_xml_id;
     protected $builder_xml_id;
     protected $loa;
@@ -32,11 +32,8 @@ class YachtModelSync extends Sync{
         $displacemen
     )
     {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
         $this->category_xml_id = $category_xml_id_;
         $this->builder_xml_id = $builder_xml_id_;
         $this->loa = $loa;
@@ -48,11 +45,6 @@ class YachtModelSync extends Sync{
         $this->fuel_tank = $fuel_tank;
         $this->displacemen = $displacemen;
     }
-    /**
-     * 
-     * Additional functions 
-     */
-
     /**
      * 
      * Syncrons function
@@ -93,5 +85,4 @@ class YachtModelSync extends Sync{
         } 
         return false;
     }
-
 }

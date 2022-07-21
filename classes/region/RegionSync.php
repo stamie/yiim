@@ -8,9 +8,8 @@ use app\classes\Sync;
 
 class RegionSync extends Sync{
     private static $model = 'app\models\Region';
-    
+    protected $name; 
     protected $country_id;
-
     /**
      * 
      * Base functions 
@@ -18,11 +17,8 @@ class RegionSync extends Sync{
 
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1, $country_id)
     {
-        $this->id = $ID;
-        $this->xml_id = $xmlId;
-        $this->xml_json_id = $xmlJsonId;
+        parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
         $this->name = $name_;
-        $this->is_active = intval($isActive);
         $this->country_id = intval($country_id);
     }
     /**
