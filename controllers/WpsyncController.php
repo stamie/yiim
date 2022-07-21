@@ -17,6 +17,7 @@ use Yii;
 use yii\helpers\Url;
 use app\models\Posts;
 use app\models\TablePrefix;
+use app\models\WpYacht;
 use app\models\Xml;
 use app\models\Yacht;
 use yii\helpers\BaseUrl;
@@ -37,7 +38,7 @@ class WpsyncController extends \yii\web\Controller
         $prefix = '';
         if ($tablePrefix && $ret) {
             $prefix = $tablePrefix->prefix;
-            
+            //exit('cica');
             return $this->render('index', ['pr' => $prefix, 'prId' => $id, 'ret' => $ret]);
         }
 
@@ -50,7 +51,7 @@ class WpsyncController extends \yii\web\Controller
         $prefix = '';
         if ($tablePrefix && $ret) {
             $prefix = $tablePrefix->prefix;
-            
+            //exit('cica');
             return $this->render('index', ['pr' => $prefix, 'prId' => $id, 'ret' => $ret]);
         }
 
@@ -58,6 +59,7 @@ class WpsyncController extends \yii\web\Controller
     }
     public function deleteOldYachtPosts()
     {
+
         foreach (TablePrefix::find()->all() as $id)
             Wpsync::deleteOldYachtPosts($id);
     }
@@ -107,14 +109,15 @@ class WpsyncController extends \yii\web\Controller
 
                 $picture = '';
                 foreach ($scanned_directory as $file) {
-                    if (is_file($dir . '/' . $file) && strpos($file, '-main') > 0) {
+                    if (is_file($dir . '/' . $file) && strpos($file, 'main') > 0) {
                         $picture = str_replace('Boat', $yachtForXml->wp_name, 'src="' . str_replace('/web', '', Url::base(1)) . '/boat-' . $yachtForXml->xml_id . '/' . $yachtForXml->id . '/' . $file . '" class="thumbnail" alt="Boat" title="Boat" style="height:100%;display: block; margin-left: auto; margin-right: auto;"');
                     }
                     $return[$yachtForXml->id] = $picture;
                 }
             }
         }
-        echo json_encode($return);
+        $return = json_encode($return);
+        echo $return;
     }
 
     public function actionHreflang()
@@ -126,6 +129,7 @@ class WpsyncController extends \yii\web\Controller
         $replaceUrl = $request->get('replace_url') ? $request->get('replace_url') : '';
         $url = BaseUrl::base() . '/wpsync/hreflang';
         $tablePrefixes = TablePrefix::find()->all();
+        $return = 0;
         if ($prId && $lang && $lang < count(self::$languages)) {
             $hrefLangs = Postmeta::find()->where("meta_value like '%" . self::$languages[$lang]['code'] . "%" . self::$languages[($lang + 1)]['code'] . "%'")->all();
 
@@ -144,5 +148,12 @@ class WpsyncController extends \yii\web\Controller
             }
         }
         return $this->render('hreflang', ['url' => $url, 'tablePrefixes' => $tablePrefixes, 'languages' => self::$languages]);
+    }
+    public function actionDeleteoldposts() {
+        $request = Yii::$app->request;
+        $prefix_id = intval($request->get("id"));
+        $ID        = intval($request->get("wp_id"));
+        WpYacht::deleteAll(['ID' => $ID]);
+        return 'OK';
     }
 }

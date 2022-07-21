@@ -15,6 +15,8 @@ use app\models\CheckInPeriod;
 use app\models\YachtPriceLocation;
 use app\models\YachtSeasonService;
 use app\models\ServicesValidForBases;
+use app\models\WpYacht;
+
 class NausysYacht  extends YachtSync
 {
     private static $resturl      = 'http://ws.nausys.com/CBMS-external/rest/catalogue/v6/yachts/';
@@ -25,7 +27,7 @@ class NausysYacht  extends YachtSync
     private static $subModelsName = 'app\classes\yacht\PhotoSync';
     public function __construct(
         $ID = null,
-        $wpId = 0,
+       // $xmlId,
         $xmlJsonId,
         $name_,
         $isActive = 1,
@@ -75,9 +77,9 @@ class NausysYacht  extends YachtSync
         if ($xml) {
             $xmlId = $xml->id;
         }
+        
         parent::__construct(
             $ID,
-            $wpId,
             $xmlId,
             $xmlJsonId,
             $name_,
@@ -185,7 +187,7 @@ class NausysYacht  extends YachtSync
                     foreach ($objectes as $obj) {
                         $objObj = new self::$modelName(
                             null,
-                            0,
+                          //  $xmlId,
                             intval($obj->id),
                             $obj->name,
                             1, //->textEN, 1,
@@ -585,6 +587,7 @@ class NausysYacht  extends YachtSync
                     $returnId = self::oneYachtSynronise($obj, 1);
                     return $returnId;
                 }
+                
             } else {
                 $return = false;
             }
@@ -1120,8 +1123,7 @@ class NausysYacht  extends YachtSync
             //  if (intval($obj->id)==101300){
             $objObj = new self::$modelName(
                 null,
-                0,
-                1,
+              //  $xmlId,
                 intval($obj->id),
                 $obj->name,
                 1, //->textEN, 1,
@@ -1240,6 +1242,178 @@ class NausysYacht  extends YachtSync
 
         return $return;
     }
+        /**********************************************************
+     * Yachtok és képek szinkronja, specifikus adatok nélkül
+     **********************************************************/
+
+    public static function yachtSynronise2($companyId, $need_picture = 0)
+    { 
+        $cred = new Nausys();
+        $xmlId = 0;
+        
+        $xml = Xml::findOne(array('slug' => 'nausys'));
+        if ($xml) {
+            $xmlId = $xml->id;
+
+        };
+        $return = false;
+        var_dump($companyId);
+        $company = Company::findOne($companyId);
+        if ($company) :
+            $return = true;
+            self::inactiveRows(intval($xmlId), $company->xml_json_id);
+            echo "inactive rows; ";
+            Price::inactiveAll($xmlId, $company->xml_json_id);
+            echo "inactive price; ";
+
+            //YachtPriceLocation::inactiveAll($prId, $xmlId, $company->xml_json_id);
+            YachtSeason::inactiveAllSeason($xmlId, $company->xml_json_id);
+            echo "inactive yachtSession; ";
+
+            RegularDiscount::inactiveAll($xmlId, $company->xml_json_id);
+            echo "inactive regularDiscounts; ";
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, self::$resturl . $company->xml_json_id);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,  $cred->getJsonCredentials());
+
+            $header = array('Content-Type: application/json');
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            $exec = curl_exec($ch);
+            curl_close($ch);
+
+            if ($exec) {
+                $Obj = json_decode($exec);
+
+                if ($Obj->status == "OK") {
+                    $objName = self::$objectname;
+                    $objectes = $Obj->$objName;
+                    foreach ($objectes as $obj) {
+                        var_dump($obj);
+                        //  if (intval($obj->id)==101300){
+                        $objObj = new self::$modelName(
+                            null,
+                         //   $xmlId,
+                            intval($obj->id),
+                            $obj->name,
+                            1, //->textEN, 1,
+                            $obj->companyId,
+                            $obj->baseId,
+                            $obj->locationId,
+                            $obj->yachtModelId,
+                            $obj->draft,
+                            $obj->cabins,
+                            $obj->cabinsCrew,
+                            $obj->berthsCabin,
+                            $obj->berthsSalon,
+                            $obj->berthsCrew,
+                            $obj->berthsTotal,
+                            $obj->wc,
+                            isset($obj->wcCrew) ? $obj->wcCrew : 0,
+                            isset($obj->buildYear) ? $obj->buildYear : 0,
+                            isset($obj->engines) ? $obj->engines : null,
+                            isset($obj->enginePower) ? $obj->enginePower : null,
+                            isset($obj->steeringTypeId) ? $obj->steeringTypeId : null,
+                            isset($obj->sailTypeId) ? $obj->sailTypeId : null,
+                            isset($obj->sailRenewed) ? $obj->sailRenewed : null,
+                            isset($obj->genoaTypeId) ? $obj->genoaTypeId : null,
+                            isset($obj->genoaRenewed) ? $obj->genoaRenewed : null,
+                            isset($obj->commission) ? $obj->commission : 0,
+                            isset($obj->deposit) ? $obj->deposit : 0,
+                            isset($obj->maxDiscount) ? $obj->maxDiscount : null,
+                            $obj->fourStarCharter ? 1 : 0,
+                            isset($obj->charterType) ? $obj->charterType : null,
+                            isset($obj->propulsionType) ? $obj->propulsionType : null,
+                            isset($obj->internalUse) ? $obj->internalUse : null,
+                            isset($obj->launchedYear) ? $obj->launchedYear : null,
+                            $obj->needsOptionApproval ? 1 : 0,
+                            $obj->canMakeBookingFixed ? 1 : 0,
+                            isset($obj->fuelTank) ? $obj->fuelTank : 0,
+                            isset($obj->waterTank) ? $obj->waterTank : 0,
+                            isset($obj->mastLength) ? $obj->mastLength : null,
+                            isset($obj->numberOfRudderBlades) ? $obj->numberOfRudderBlades : null,
+                            isset($obj->engineBuilderId) ? $obj->engineBuilderId : null,
+                            isset($obj->hullColor) ? $obj->hullColor : null,
+                            isset($obj->thirdPartyInsuranceAmount) ? $obj->thirdPartyInsuranceAmount : null,
+                            isset($obj->thirdPartyInsuranceCurrency) ? $obj->thirdPartyInsuranceCurrency : null,
+                            isset($obj->maxPersons) ? $obj->maxPersons : null
+                        );
+
+                        $returnId = $objObj->sync();
+                        var_dump($obj->id);
+                        var_dump($obj);
+
+                        $subReturn = true;
+                        if (isset($obj->mainPictureUrl))
+                            var_dump($obj->mainPictureUrl);
+
+                        $oldPath = Yii::$app->basePath . '/boat-' . $xmlId . '/' . $returnId;
+                        if (!file_exists($oldPath) || $need_picture == 1) {
+                            // Main kép leszedése
+                            if ($returnId && isset($obj->mainPictureUrl)) {
+                                $photo = str_replace(' ', ' ', $obj->mainPictureUrl) . "?w=900";
+                                $photoObject = new PhotoSync($returnId, $photo);
+                                $subReturn = $subReturn && $photoObject->save($xmlId, 0, 0);
+                                $photo = str_replace(' ', ' ', $obj->mainPictureUrl) . "?w=400";
+                                $photoObject = new PhotoSync($returnId, $photo);
+                                $subReturn = $subReturn && $photoObject->save($xmlId, 0, 1);
+                                $photo = str_replace(' ', ' ', $obj->mainPictureUrl) . "?w=600";
+                                $photoObject = new PhotoSync($returnId, $photo);
+                                $subReturn = $subReturn && $photoObject->save($xmlId, 0, 2);
+                            } else if ($returnId && isset($obj->picturesURL)) {
+                                foreach ($obj->picturesURL as $photo) {
+                                    var_dump($photo);
+                                    $photo =  str_replace(' ', ' ', $photo) . "?w=400";
+                                    $photoObject = new PhotoSync($returnId, $photo);
+                                    $subReturn = $subReturn && $photoObject->save($xmlId, 0, 1);
+
+                                    $photo =  str_replace(' ', ' ', $photo) . "?w=600";
+                                    $photoObject = new PhotoSync($returnId, $photo);
+                                    $subReturn = $subReturn && $photoObject->save($xmlId, 0, 2);
+                                    break;
+                                }
+                            }
+
+                            // Egyébb kép leszedése
+                            if ($returnId && isset($obj->picturesURL)) {
+                                //var_dump($obj->picturesURL);
+                                $index = 0;
+                                foreach ($obj->picturesURL as $photo) {
+                                    var_dump($photo);
+                                    if ($index > 9)
+                                        break;
+                                    $index++;
+                                    $photo =  str_replace(' ', ' ', $photo) . "?w=900";
+                                    $photoObject = new PhotoSync($returnId, $photo);
+                                    $subReturn = $subReturn && $photoObject->save($xmlId, 0, 0);
+                                }
+                                $newPath = Yii::$app->basePath . '/boat-' . $xmlId . '/new-' . $returnId;
+                                if (file_exists($newPath)) {
+                                    $oldPath = Yii::$app->basePath . '/boat-' . $xmlId . '/' . $returnId;
+                                    if (file_exists($oldPath)) {
+                                        parent::rrmdir($oldPath);
+                                    }
+                                    @rename($newPath, $oldPath);
+                                }
+                            }
+                        }
+                        $return = $return && isset($returnId) && $subReturn;
+                    }
+                
+                }
+            
+            } else {
+                exit("baj van az xml csat-al yacht-ban");
+                $return = false;
+            }
+        else :
+            return false;
+        endif;
+        return $return;
+    }
     /**********************************************************
      * Yachtok és képek szinkronja, specifikus adatok nélkül
      **********************************************************/
@@ -1292,8 +1466,7 @@ class NausysYacht  extends YachtSync
                         //  if (intval($obj->id)==101300){
                         $objObj = new self::$modelName(
                             null,
-                            0,
-                            $prId,
+                         //   $xmlId,
                             intval($obj->id),
                             $obj->name,
                             1, //->textEN, 1,
@@ -1422,6 +1595,24 @@ class NausysYacht  extends YachtSync
             $object->is_new = 0;
             $object->save(0);
             $object = $objName::findOne(['xml_id' => $xml_id, 'is_archive' => 0, 'is_active' => 1, 'company_id' =>  $company_id]);
+        }
+        return true;
+    }
+    public static function deleteInactivRows(int $xml_id, $company_id)
+    {
+        $objName = self::$model;
+        $object = $objName::findOne(['xml_id' => $xml_id, 'is_archive' => 0, 'is_active' => 0, 'company_id' =>  $company_id]);
+        while ($object) {
+            $object->is_active = 0;
+            $object->is_archive = 1;
+            $object->save(0);
+            $wpYachts = WpYacht::findAll(['id' => $object->id]);
+            foreach ($wpYachts as $wpYacht) {
+                $ch = curl_init(Yii::$app->params['baseurl']."deleteoldposts?id={$wpYacht->wp_prefix}&wp_id={$wpYacht->wp_id}");
+                $exec = curl_exec($ch);
+            }
+            WpYacht::deleteAll(['id' => $object->id]);
+            $object = $objName::findOne(['xml_id' => $xml_id, 'is_archive' => 0, 'is_active' => 0, 'company_id' =>  $company_id]);
         }
         return true;
     }

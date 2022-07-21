@@ -523,16 +523,14 @@ class NausysBooking extends Booking
     }
     public static function yachtSearch($boat_id, $date_from, $date_to, $xml_id)
     {
-
-        $from = date('d.m.Y', strtotime($date_from));
-        $to   = date('d.m.Y', strtotime($date_to));
-        $exec = self::freeYachtsConnect($from, $to, [$boat_id]);
-        if ($exec->status == 'OK') {
-            $obj = $exec->freeYachts;
-            $obj = self::convertYachtList($obj, $xml_id, 0);
-            return isset($obj['list']) ? $obj['list'] : [];
+        $yacht  =  Yacht::findOne(['xml_json_id' => $boat_id, 'xml_id' =>$xml_id]);
+        if ($yacht){
+            $yachtCash = YachtCash::findOne(['yacht_id' => $yacht->id, 'date_from' => $date_from]);
+            if ($yachtCash){
+                $return = json_decode($yachtCash->json_value, true);
+                return $return;
+            }
         }
-
         return array();
     }
 

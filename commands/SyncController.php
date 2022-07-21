@@ -388,7 +388,7 @@ class SyncController extends Controller
         $allCashLogs = CashLog::find()->where('end_datetime is null')->all();
         $cashLog = new CashLog();
         $cashLog->start_datetime = date('Y-m-d H:i:s');
-        $cashLog->type = 'yacht cash';
+        $cashLog->type = 'yacht model cash';
         $cashLog->save();
         
         if (is_array($allCashLogs) && count($allCashLogs) > 0){
@@ -408,7 +408,6 @@ class SyncController extends Controller
         
 
         if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
             $prId = $tablePrefix->id;
 
             $xmls = Xml::find()->all();
@@ -463,7 +462,9 @@ class SyncController extends Controller
                 $companies = Company::findAll(["xml_id" => $xml->id]);
                 if (is_array($companies)) {
                     foreach ($companies as $company) {
-                        $returnObj = $this->actionYachtwithcompany($id, $company->id, $need_picture, 1);
+                        $returnObj = $this->actionYachtwithcompany($id, $company->id, $need_picture, null);
+                        $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+                        $class::deleteInactivRows($xml->id, $company->id);
                         $return = $return && $returnObj;
                     }
                 }
@@ -481,7 +482,7 @@ class SyncController extends Controller
     public function actionYachtwithcompany($id, $companyId, $need_picture = 0, $exit = null)
     {
         $startDate = date('Y-m-d H:i:s');
-        $log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
+        //$log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
 
         $tablePrefix = TablePrefix::findOne($id);
         $prefix = '';
@@ -492,16 +493,16 @@ class SyncController extends Controller
         $dirName = 'yacht';
 
         $xmls = Xml::find()->all();
-
+var_dump(Yii::$app->params);
         foreach ($xmls as $xml) {
 
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-            $returnObj = $class::yachtSynronise($prId, $companyId, $need_picture);
+            $returnObj = $class::yachtSynronise2($companyId, $need_picture);
             $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
-        $log->end($end_date, json_encode(array()));
-        return ExitCode::OK;
+        //$log->end($end_date, json_encode(array()));
+        return (($exit) ? ExitCode::OK : 1);
     }
 
     /**

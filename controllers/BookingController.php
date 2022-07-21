@@ -65,7 +65,7 @@ class BookingController extends \yii\web\Controller
                 $bookingClasses = 'app\classes\booking\\' . $xml->class_name . 'Booking';
                 $booking = array();
                 $booking = $bookingClasses::yachtSearch($yacht->xml_json_id, $date_from, $date_to, $xml->id);
-            } 
+            } //return $booking1;
         }
         return json_encode($booking);
     }
@@ -96,6 +96,8 @@ class BookingController extends \yii\web\Controller
         $flexibility = $request->get('flexibility') ? $request->get('flexibility') : 'on_day';
         $dest_ids = $request->get('dest_ids') ? $request->get('dest_ids') : null;
         $wp_prefix = $request->get('wp_prefix') ? $request->get('wp_prefix') : null;
+        $lists = [];
+        $return = [];
         $booking = [];
         foreach (Xml::find()->all() as $xml) {
             $yachtCategories1 = DestinationYachtCategory::getAllYachtCategoriesForDestination($dest_ids, $xml->id, $wp_prefix);
@@ -150,7 +152,7 @@ class BookingController extends \yii\web\Controller
             
         }
         $args = $request->post('args') ? $request->post('args') : array();
-        $args['cabins'] = $cabins; 
+        $args['cabins'] = $cabins; //var_dump($cabins); return;
         if (isset($args["order_by"])) {
             $orderBy   = intval($args["order_by"]);
             $ascOrDesc = isset($args["desc"]) ? intval($args["desc"]) : 0;
@@ -169,8 +171,11 @@ class BookingController extends \yii\web\Controller
                 if (is_array($ports2) && count($ports2) > 0) {
                     $lists['ports'] = array_merge($ports, $ports2);
                 }
-            } else {
+            } else { //if (!is_array($dest_ids) || count($dest_ids) == 0)  {
                 $ports2 = Port::findAll(["xml_id" => $xml->id]);
+                /*
+                $countries = Country::findAll(["xml_id" => $xml->id]);
+              */
                 foreach ($ports2 as $country) {
                     $lists['ports'][] = $country->xml_json_id;
                 }
@@ -261,6 +266,7 @@ class BookingController extends \yii\web\Controller
                     $args['selectedServiceTypes'] = $serviceType->service_types;
             }
             if (is_array($selectedCategories)) {
+                //$yachtCategories = $selectedCategories;
                 $yacht_categories = $selectedCategories;
                 $lists['yacht_categories'] = $yacht_categories;
              }
@@ -270,12 +276,13 @@ class BookingController extends \yii\web\Controller
                
                 $booking = $booking1;
             } else if ((!is_array($dest_ids) || count($dest_ids) == 0) && is_array($lists['ports']) && count($lists['ports']) > 0) {
+                //unset($lists['ports']); echo "hello2";
                 $booking1 = $bookingClasses::freeYachtsSearch2($date_from, $duration, $flexibility, $lists, $xml->id, $is_sale, $orderBy, $ascOrDesc);
                 $booking = $booking1;
             }
             //$booking = $booking1; //array_merge($booking, $booking1); <-- fejlesztendő
             $booking['yacht_categories'] = $lists['yacht_categories'];
-            
+            //return $booking1;
         }
         return json_encode($booking);
     }
@@ -294,6 +301,7 @@ class BookingController extends \yii\web\Controller
         $booking = [];
         foreach (Xml::find()->all() as $xml) {
             $yachtCategories = Yacht::find()->where(['id' => $lists])->andWhere(['xml_id' => $xml->id])->all();
+            //$ports = CityDestination::getAllPortsForAllCities($dest_id, $xml->id, $wp_prefix);
             $yachtCategories = DestinationYachtCategory::getAllYachtCategoriesForDestination($dest_id, $xml->id, $wp_prefix);
             $list['ports'] = [];
             foreach ($ports as $port_id) {
@@ -432,13 +440,14 @@ class BookingController extends \yii\web\Controller
             return 1;
         return 0;
     }
-    public function actionThree2()
+    public function actionThree2($id)
     {
         $request = Yii::$app->request;
         $prefix = $request->get('id') ? intval($request->get('id')) : null;
-        $ret = CashYachts::threeFreeYachtsToCash2($prefix);
+        $ret = CashYachts::threeFreeYachtsToCash2($id);
         if ($ret)
             return 1;
         return 0;
     }
+
 }
