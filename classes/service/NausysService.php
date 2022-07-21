@@ -21,7 +21,7 @@ class NausysService  extends ServiceSync {
      * 
      * Syncrons function
      */
-    public static function syncronise($prId) {
+    public static function syncronise() {
         $cred = new Nausys();
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, self::$resturl );

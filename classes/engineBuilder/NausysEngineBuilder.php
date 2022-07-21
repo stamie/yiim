@@ -28,7 +28,7 @@ class NausysEngineBuilder  extends EngineBuilderSync {
      * Syncrons function
      */
 
-    public static function syncronise($prId) {
+    public static function syncronise() {
         $cred = new Nausys();
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, self::$resturl );
@@ -49,10 +49,10 @@ class NausysEngineBuilder  extends EngineBuilderSync {
                 if ($xml){
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId) );
+                self::inactiveRows(intval($xmlId) );
                 $return = true;
                 foreach ($objectes as $obj) {
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name ); //->textEN ); //, 1 );
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), $obj->name );
                     $return = $return && $objObj->sync();
                 }
                 return $return;
@@ -65,7 +65,7 @@ class NausysEngineBuilder  extends EngineBuilderSync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows(int $xml_id) {
         $objName = self::$model;
         $objectes = $objName::findAll([ 'xml_id' => $xml_id]);
         foreach ($objectes as $obj)

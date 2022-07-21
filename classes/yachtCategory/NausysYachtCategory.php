@@ -34,7 +34,7 @@ class NausysYachtCategory  extends YachtCategorySync {
      * Syncrons function
      */
 
-    public static function syncronise($prId) {
+    public static function syncronise() {
 
         $cred = new Nausys();
         

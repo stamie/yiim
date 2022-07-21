@@ -8,14 +8,10 @@
  * Év: 2021
  * 
  */
-
 namespace app\commands;
-
-
 use yii\console\Controller;
 use yii\console\ExitCode;
 use Yii;
-use app\models\TablePrefix;
 use app\models\Xml;
 use app\models\Company;
 use app\models\SyncronLog;
@@ -26,8 +22,6 @@ class SyncController extends Controller
 {
 
     private $parentLogId = 0;
-
-
     /**
      * 
      * ### Országok szinkronja (XXXXX)
@@ -35,16 +29,6 @@ class SyncController extends Controller
      */
     public function actionPrefix($id)
     {
-
-        $tablePrefix = TablePrefix::findOne($id);
-
-        $prefix = '';
-        $prId = 0;
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-        }
-
         return ExitCode::OK;
     }
 
@@ -147,24 +131,13 @@ class SyncController extends Controller
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Price Measure Syncron', $this->parentLogId);
 
-
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
+        $xmls = Xml::find()->all();
 
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-                $class = "app\classes\pricemeasure\\" . $xml->class_name . "PriceMeasure";
-
-                $ret = $class::syncronise($prId);
-                $return = $return && $ret;
-            }
+        foreach ($xmls as $xml) {
+            $class = "app\classes\pricemeasure\\" . $xml->class_name . "PriceMeasure";
+            $ret = $class::syncronise();
+            $return = $return && $ret;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -179,23 +152,12 @@ class SyncController extends Controller
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Country Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-                $countryClass = "app\classes\country\\" . $xml->class_name . "Country";
-
-                $countryRet = $countryClass::syncronise($prId);
-                $return = $return && $countryRet;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $countryClass = "app\classes\country\\" . $xml->class_name . "Country";
+            $countryRet = $countryClass::syncronise();
+            $return = $return && $countryRet;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -212,24 +174,14 @@ class SyncController extends Controller
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Equipment Category Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'equipmentcategory';
         $className = 'EquipmentCategory';
         $dirName = 'equipmentCategory';
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-            $xmls = Xml::find()->all();
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -245,22 +197,15 @@ class SyncController extends Controller
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Builder Syncron', $this->parentLogId);
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
+
         $return = true;
-        $view = 'yachtbuilder';
         $className = 'YachtBuilder';
         $dirName = 'yachtBuilder';
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-            $xmls = Xml::find()->all();
-            foreach ($xmls as $xml) {
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -277,27 +222,14 @@ class SyncController extends Controller
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Engine Builder Syncron', $this->parentLogId);
 
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'enginebuilder';
         $className = 'EngineBuilder';
         $dirName = 'engineBuilder';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -314,26 +246,15 @@ class SyncController extends Controller
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Equipment Syncron', $this->parentLogId);
 
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
+
         $return = true;
-        $view = 'equipment';
         $className = 'Equipment';
         $dirName = 'equipment';
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -350,27 +271,14 @@ class SyncController extends Controller
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Category Syncron', $this->parentLogId);
 
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'yachtcategory';
         $className = 'YachtCategory';
         $dirName = 'yachtCategory';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -390,38 +298,26 @@ class SyncController extends Controller
         $cashLog->start_datetime = date('Y-m-d H:i:s');
         $cashLog->type = 'yacht model cash';
         $cashLog->save();
-        
-        if (is_array($allCashLogs) && count($allCashLogs) > 0){
+
+        if (is_array($allCashLogs) && count($allCashLogs) > 0) {
             $d = date('Y-m-d H:i:s');
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'ERROR (RUN ANY JOBS)';
             $cashLog->save(0);
             return ExitCode::UNSPECIFIED_ERROR;
         }
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'yachtmodel';
         $className = 'YachtModel';
         $dirName = 'yachtModel';
-        
-
-        if ($tablePrefix) {
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
-        } 
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
+        }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
-        if ($return){
+        if ($return) {
             $d = date('Y-m-d H:i:s');
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'OK';
@@ -434,7 +330,6 @@ class SyncController extends Controller
         $cashLog->save(0);
 
         return ExitCode::UNSPECIFIED_ERROR;
-            
     }
     /**
      *
@@ -446,27 +341,18 @@ class SyncController extends Controller
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
 
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-            $xmls = Xml::find()->all();
-            foreach ($xmls as $xml) {
-                $companies = Company::findAll(["xml_id" => $xml->id]);
-                if (is_array($companies)) {
-                    foreach ($companies as $company) {
-                        $returnObj = $this->actionYachtwithcompany($id, $company->id, $need_picture, null);
-                        $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                        $class::deleteInactivRows($xml->id, $company->id);
-                        $return = $return && $returnObj;
-                    }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $companies = Company::findAll(["xml_id" => $xml->id]);
+            if (is_array($companies)) {
+                foreach ($companies as $company) {
+                    $returnObj = $this->actionYachtwithcompany($id, $company->id, $need_picture, null);
+                    $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+                    $class::deleteInactivRows($xml->id, $company->id);
+                    $return = $return && $returnObj;
                 }
             }
         }
@@ -481,21 +367,12 @@ class SyncController extends Controller
      */
     public function actionYachtwithcompany($id, $companyId, $need_picture = 0, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
-        //$log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
         $xmls = Xml::find()->all();
-var_dump(Yii::$app->params);
+        var_dump(Yii::$app->params);
         foreach ($xmls as $xml) {
-
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::yachtSynronise2($companyId, $need_picture);
             $return = $return && $returnObj;
@@ -514,14 +391,10 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron Prices', $this->parentLogId);
-
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
         $xmls = Xml::find()->all();
-
         foreach ($xmls as $xml) {
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncroniseYachtsAndPrices($xml->id);
@@ -530,7 +403,6 @@ var_dump(Yii::$app->params);
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        
     }
     /**
      *
@@ -541,14 +413,10 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron StandardEquipment', $this->parentLogId);
-
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
         $xmls = Xml::find()->all();
-
         foreach ($xmls as $xml) {
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncroniseYachtsAndStandardEquipment($xml->id);
@@ -557,7 +425,6 @@ var_dump(Yii::$app->params);
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        
     }
     /*
     * ### Yachtok szinkronja (XX)
@@ -567,14 +434,10 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron AdditionalEquipment', $this->parentLogId);
-
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
         $xmls = Xml::find()->all();
-
         foreach ($xmls as $xml) {
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncroniseYachtsAndAdditionalEquipment($xml->id);
@@ -583,7 +446,6 @@ var_dump(Yii::$app->params);
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        
     }
     /*
     * ### Yachtok szinkronja (XX)
@@ -593,14 +455,10 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron CheckInPeriod', $this->parentLogId);
-
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
         $xmls = Xml::find()->all();
-
         foreach ($xmls as $xml) {
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncroniseYachtsAndCheckInPeriod($xml->id);
@@ -609,7 +467,6 @@ var_dump(Yii::$app->params);
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        
     }
     /**
      *
@@ -620,27 +477,18 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
-
         $return = true;
-        $view = 'yacht';
         $className = 'Yacht';
         $dirName = 'yacht';
-
-
-
         $xmls = Xml::find()->all();
-
         foreach ($xmls as $xml) {
-
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncroniseYachtsAndServices($xml->id, $minId);
             $return = $return && $returnObj;
         }
-
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
-        
     }
     /**
      *
@@ -651,17 +499,11 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Region Syncron', $this->parentLogId);
-
-        $view = 'region';
         $className = 'Region';
         $dirName = 'region';
-
-
-
         $xmls = Xml::find()->all();
         $return = true;
         foreach ($xmls as $xml) {
-
             $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
             $returnObj = $class::syncronise($xml->id);
             $return = $return && $returnObj;
@@ -680,28 +522,16 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Base Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'base';
         $className = 'Base';
         $dirName = 'base';
+        $xmls = Xml::find()->all();
 
+        foreach ($xmls as $xml) {
 
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -715,31 +545,16 @@ var_dump(Yii::$app->params);
      */
     public function actionPort($id, $exit = null)
     {
-
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Ports Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'port';
         $className = 'Port';
         $dirName = 'port';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -752,31 +567,16 @@ var_dump(Yii::$app->params);
      */
     public function actionSailtype($id, $exit = null) //Fejlesztendő
     {
-
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Sail Type Syncron', $this->parentLogId);
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'sailtype';
         $className = 'SailType';
         $dirName = 'sailtype';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -791,29 +591,14 @@ var_dump(Yii::$app->params);
     {
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Steering Type Syncron', $this->parentLogId);
-
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'steeringtype';
         $className = 'SteeringType';
         $dirName = 'steeringtype';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -827,31 +612,16 @@ var_dump(Yii::$app->params);
      */
     public function actionService($id, $exit = null) //Fejlesztendő
     {
-
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Service Syncron', $this->parentLogId);
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'service';
         $className = 'Service';
         $dirName = 'service';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -865,31 +635,16 @@ var_dump(Yii::$app->params);
      */
     public function actionCompany($id, $exit = null) //Fejlesztendő
     {
-
         $startDate = date('Y-m-d H:i:s');
         $log = SyncronLog::log($startDate, 'Company Syncron', $this->parentLogId);
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'company';
         $className = 'Company';
         $dirName = 'company';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && $returnObj;
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && $returnObj;
         }
         $end_date = date('Y-m-d H:i:s');
         $log->end($end_date, json_encode(array()));
@@ -904,44 +659,22 @@ var_dump(Yii::$app->params);
     public function actionDiscountitem($id, $exit = null)
     {
         $isAutomate = 1;
-
         $startDate = date('Y-m-d H:i:s');
-
         $parentString2 = 'Discount Item Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
-
-
         $log = SyncronLog::log($startDate, $parentString2, $this->parentLogId, $isAutomate);
-
-
-
         $request = Yii::$app->request;
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
         $view = 'discountitemsync';
         $className = 'DiscountItem';
         $dirName = 'discountItem';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && isset($returnObj);
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && isset($returnObj);
         }
-
         $end_date = date('Y-m-d H:i:s');
-
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -954,44 +687,22 @@ var_dump(Yii::$app->params);
     public function actionSeason($id, $exit = null)
     {
         $isAutomate = 1;
-
-
         $startDate = date('Y-m-d H:i:s');
-
         $parentString2 = 'Session Syncron';
         $log = SyncronLog::log($startDate, $parentString2, $this->parentLogId, $isAutomate);
-
-
         $request = Yii::$app->request;
-        $tablePrefix = TablePrefix::findOne($id);
-        $prefix = '';
-        $prId = 0;
         $return = true;
-        $view = 'seasonsync';
         $className = 'Season';
         $dirName = 'season';
-
-
-        if ($tablePrefix) {
-            $prefix = $tablePrefix->prefix;
-            $prId = $tablePrefix->id;
-
-            $xmls = Xml::find()->all();
-
-            foreach ($xmls as $xml) {
-
-                $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                $returnObj = $class::syncronise($prId);
-                $return = $return && isset($returnObj);
-            }
+        $xmls = Xml::find()->all();
+        foreach ($xmls as $xml) {
+            $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
+            $returnObj = $class::syncronise();
+            $return = $return && isset($returnObj);
         }
-
         $end_date = date('Y-m-d H:i:s');
-
         $error = json_encode([]);
         $log->end($end_date, $error);
-
         return (($exit) ? ExitCode::OK : 1);
     }
 }

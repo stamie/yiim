@@ -32,7 +32,7 @@ class NausysCountry  extends CountrySync {
 
     }
 
-    public static function syncronise($prId) {
+    public static function syncronise() {
 
         $cred = new Nausys();
 

@@ -254,8 +254,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     foreach ($xmls as $xml){
                         $countryClass = "app\classes\country\\".$xml->class_name."Country";
-                    
-                        $countryRet = $countryClass::syncronise($prId);
+                        $countryRet = $countryClass::syncronise();
                         $return = $return && isset($countryRet);
                     }
                 }
@@ -336,7 +335,7 @@ const ERROR_PRICEMEASURE = 19;
                     foreach ($xmls as $xml){
                         
                         $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                        $returnObj = $class::syncronise($prId);
+                        $returnObj = $class::syncronise();
                         $return = $return && isset($returnObj);
                     }
                 }
@@ -414,7 +413,7 @@ const ERROR_PRICEMEASURE = 19;
                     foreach ($xmls as $xml){
                         
                         $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                        $returnObj = $class::syncronise($prId);
+                        $returnObj = $class::syncronise();
                         $return = $return && isset($returnObj);
                     }
                 }
@@ -493,7 +492,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -570,7 +569,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -647,7 +646,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -724,7 +723,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -804,7 +803,7 @@ const ERROR_PRICEMEASURE = 19;
                     foreach ($xmls as $xml){
                         
                         $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                        $returnObj = $class::syncronise($prId);
+                        $returnObj = $class::syncronise();
                         $return = $return && isset($returnObj);
                     }
                 }
@@ -885,7 +884,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -964,7 +963,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1042,7 +1041,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;     
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1120,7 +1119,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
                      
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1198,7 +1197,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
                      
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1277,7 +1276,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
                      
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1357,7 +1356,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
 
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1437,7 +1436,7 @@ const ERROR_PRICEMEASURE = 19;
                     
                     $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
 
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && isset($returnObj);
                 }
             }
@@ -1519,7 +1518,7 @@ const ERROR_PRICEMEASURE = 19;
                         
                         $class = "app\classes\\$dirName\\".$xml->class_name.$className;   
 
-                        $returnObj = $class::syncronise($prId);
+                        $returnObj = $class::syncronise();
                         $return = $return && isset($returnObj);
                     }
                 }
@@ -1595,7 +1594,7 @@ const ERROR_PRICEMEASURE = 19;
                 foreach ($xmls as $xml){
                     $class = "app\classes\pricemeasure\\".$xml->class_name."PriceMeasure";
                 
-                    $ret = $class::syncronise($prId);
+                    $ret = $class::syncronise();
                     $return = $return && $ret;
                 }
             }
