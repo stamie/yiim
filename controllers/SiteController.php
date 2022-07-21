@@ -152,7 +152,7 @@ class SiteController extends Controller
             $user = new User();
             $user->username = 'wpuser';
             $user->email = 'estampel@gmail.com';
-            $user->created_at = date('Y-m-d H:i:s');
+            $user->created_at = date(\app\classes\Sync::$dateString);
             $user->updated_at = $user->created_at;
             $user->setPassword('user123456');
             $user->generateAuthKey();

@@ -96,7 +96,7 @@ class BoatOption extends \yii\db\ActiveRecord
         $option->yacht_id     = $yachtId;
         $option->email        = $client["email"];
         $option->phone_number = $client["phone"];
-        $option->create_date  = date('Y-m-d H:i:s');
+        $option->create_date  = date(\app\classes\Sync::$dateString);
         $option->period_from  = $period_from;
         $option->period_to    = $period_to;
         $option->user_id      = $user_id;
@@ -131,7 +131,7 @@ class BoatOption extends \yii\db\ActiveRecord
         
         $option->email        = $client["email"];
         $option->phone_number = $client["phone"];
-        $option->create_date  = date('Y-m-d H:i:s');
+        $option->create_date  = date(\app\classes\Sync::$dateString);
 
         $option->reservation_status = 'OPTION_SEND_ERROR';
         $option->prefix_id    = $wp_prefix;

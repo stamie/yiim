@@ -8,5 +8,5 @@ class Sync {
     protected $xml_json_id;
     protected $name;
     protected $is_active;
-    protected $dateString = 'Y-m-d H:i:s';
+    public static $dateString = 'Y-m-d H:i:s';
 }

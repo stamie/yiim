@@ -35,7 +35,7 @@ class SyncController extends Controller
     public function actionIndex()
     {
         $id = 1;
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Big Syncron');
 
         $this->parentLogId = $log->id;
@@ -99,14 +99,14 @@ class SyncController extends Controller
 
         } else echo "Yacht szinkron probléma";
 
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
 
         return ExitCode::OK;
     }
     public function actionLittlesync($id)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Little Syncron');
         if ($this->actionYacht($id)) {
             echo "REndben lezajlott a Yacht szinkron";
@@ -114,7 +114,7 @@ class SyncController extends Controller
             $wpSyncController->savePosts($id);
         } else echo "Yacht szinkron probléma";
 
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
 
         return ExitCode::OK;
@@ -128,7 +128,7 @@ class SyncController extends Controller
     public function actionPricemeasure($id, $exit = null)
     {
 
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Price Measure Syncron', $this->parentLogId);
 
         $return = true;
@@ -139,7 +139,7 @@ class SyncController extends Controller
             $ret = $class::syncronise();
             $return = $return && $ret;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -150,7 +150,7 @@ class SyncController extends Controller
      */
     public function actionCountry($id, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Country Syncron', $this->parentLogId);
         $return = true;
         $xmls = Xml::find()->all();
@@ -159,7 +159,7 @@ class SyncController extends Controller
             $countryRet = $countryClass::syncronise();
             $return = $return && $countryRet;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -172,7 +172,7 @@ class SyncController extends Controller
 
     public function actionEquipmentcategory($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Equipment Category Syncron', $this->parentLogId);
         $return = true;
         $className = 'EquipmentCategory';
@@ -183,7 +183,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -195,7 +195,7 @@ class SyncController extends Controller
      */
     public function actionYachtbuilder($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Builder Syncron', $this->parentLogId);
 
         $return = true;
@@ -207,7 +207,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -219,7 +219,7 @@ class SyncController extends Controller
      */
     public function actionEnginebuilder($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Engine Builder Syncron', $this->parentLogId);
 
         $return = true;
@@ -231,7 +231,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -243,7 +243,7 @@ class SyncController extends Controller
      */
     public function actionEquipment($id, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Equipment Syncron', $this->parentLogId);
 
 
@@ -256,7 +256,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -268,7 +268,7 @@ class SyncController extends Controller
      */
     public function actionYachtcategory($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Category Syncron', $this->parentLogId);
 
         $return = true;
@@ -280,7 +280,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -291,16 +291,16 @@ class SyncController extends Controller
      */
     public function actionYachtmodel($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Model Syncron', $this->parentLogId);
         $allCashLogs = CashLog::find()->where('end_datetime is null')->all();
         $cashLog = new CashLog();
-        $cashLog->start_datetime = date('Y-m-d H:i:s');
+        $cashLog->start_datetime = date(\app\classes\Sync::$dateString);
         $cashLog->type = 'yacht model cash';
         $cashLog->save();
 
         if (is_array($allCashLogs) && count($allCashLogs) > 0) {
-            $d = date('Y-m-d H:i:s');
+            $d = date(\app\classes\Sync::$dateString);
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'ERROR (RUN ANY JOBS)';
             $cashLog->save(0);
@@ -315,16 +315,16 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         if ($return) {
-            $d = date('Y-m-d H:i:s');
+            $d = date(\app\classes\Sync::$dateString);
             $cashLog->end_datetime = $d;
             $cashLog->ret_value = 'OK';
             $cashLog->save(0);
             return ExitCode::OK;
         }
-        $d = date('Y-m-d H:i:s');
+        $d = date(\app\classes\Sync::$dateString);
         $cashLog->end_datetime = $d;
         $cashLog->ret_value = 'ERROR (SYNCRON)';
         $cashLog->save(0);
@@ -338,7 +338,7 @@ class SyncController extends Controller
      */
     public function actionYacht($id, $need_picture = 0, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
 
         $return = true;
@@ -356,7 +356,7 @@ class SyncController extends Controller
                 }
             }
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -377,7 +377,7 @@ class SyncController extends Controller
             $returnObj = $class::yachtSynronise2($companyId, $need_picture);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         //$log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -389,7 +389,7 @@ class SyncController extends Controller
      */
     public function actionYachtsprices($exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron Prices', $this->parentLogId);
         $return = true;
         $className = 'Yacht';
@@ -400,7 +400,7 @@ class SyncController extends Controller
             $returnObj = $class::syncroniseYachtsAndPrices($xml->id);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
     }
@@ -411,7 +411,7 @@ class SyncController extends Controller
      */
     public function actionYachtstequipment($exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron StandardEquipment', $this->parentLogId);
         $return = true;
         $className = 'Yacht';
@@ -422,7 +422,7 @@ class SyncController extends Controller
             $returnObj = $class::syncroniseYachtsAndStandardEquipment($xml->id);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
     }
@@ -432,7 +432,7 @@ class SyncController extends Controller
     */
     public function actionYachtadequipment($exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron AdditionalEquipment', $this->parentLogId);
         $return = true;
         $className = 'Yacht';
@@ -443,7 +443,7 @@ class SyncController extends Controller
             $returnObj = $class::syncroniseYachtsAndAdditionalEquipment($xml->id);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
     }
@@ -453,7 +453,7 @@ class SyncController extends Controller
     */
     public function actionYachtcheckinperiod($exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron CheckInPeriod', $this->parentLogId);
         $return = true;
         $className = 'Yacht';
@@ -464,7 +464,7 @@ class SyncController extends Controller
             $returnObj = $class::syncroniseYachtsAndCheckInPeriod($xml->id);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
     }
@@ -475,7 +475,7 @@ class SyncController extends Controller
      */
     public function actionYachtservices($minId = 1, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Yacht Syncron', $this->parentLogId);
         $return = true;
         $className = 'Yacht';
@@ -486,7 +486,7 @@ class SyncController extends Controller
             $returnObj = $class::syncroniseYachtsAndServices($xml->id, $minId);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return ExitCode::OK;
     }
@@ -497,7 +497,7 @@ class SyncController extends Controller
      */
     public function actionRegion($id, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Region Syncron', $this->parentLogId);
         $className = 'Region';
         $dirName = 'region';
@@ -508,7 +508,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise($xml->id);
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -520,7 +520,7 @@ class SyncController extends Controller
      */
     public function actionBase($id, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Base Syncron', $this->parentLogId);
         $return = true;
         $className = 'Base';
@@ -533,7 +533,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -545,7 +545,7 @@ class SyncController extends Controller
      */
     public function actionPort($id, $exit = null)
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Ports Syncron', $this->parentLogId);
         $return = true;
         $className = 'Port';
@@ -556,7 +556,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -567,7 +567,7 @@ class SyncController extends Controller
      */
     public function actionSailtype($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Sail Type Syncron', $this->parentLogId);
         $return = true;
         $className = 'SailType';
@@ -578,7 +578,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -589,7 +589,7 @@ class SyncController extends Controller
      */
     public function actionSteeringtype($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Steering Type Syncron', $this->parentLogId);
         $return = true;
         $className = 'SteeringType';
@@ -600,7 +600,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -612,7 +612,7 @@ class SyncController extends Controller
      */
     public function actionService($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Service Syncron', $this->parentLogId);
         $return = true;
         $className = 'Service';
@@ -623,7 +623,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -635,7 +635,7 @@ class SyncController extends Controller
      */
     public function actionCompany($id, $exit = null) //Fejlesztendő
     {
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $log = SyncronLog::log($startDate, 'Company Syncron', $this->parentLogId);
         $return = true;
         $className = 'Company';
@@ -646,7 +646,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && $returnObj;
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -659,7 +659,7 @@ class SyncController extends Controller
     public function actionDiscountitem($id, $exit = null)
     {
         $isAutomate = 1;
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $parentString2 = 'Discount Item Syncron';
         $lastLog = SyncronLog::findOne(['date_end' => null, 'parent_id' => 0]);
         $log = SyncronLog::log($startDate, $parentString2, $this->parentLogId, $isAutomate);
@@ -674,7 +674,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && isset($returnObj);
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $log->end($end_date, json_encode(array()));
         return (($exit) ? ExitCode::OK : 1);
     }
@@ -687,7 +687,7 @@ class SyncController extends Controller
     public function actionSeason($id, $exit = null)
     {
         $isAutomate = 1;
-        $startDate = date('Y-m-d H:i:s');
+        $startDate = date(\app\classes\Sync::$dateString);
         $parentString2 = 'Session Syncron';
         $log = SyncronLog::log($startDate, $parentString2, $this->parentLogId, $isAutomate);
         $request = Yii::$app->request;
@@ -700,7 +700,7 @@ class SyncController extends Controller
             $returnObj = $class::syncronise();
             $return = $return && isset($returnObj);
         }
-        $end_date = date('Y-m-d H:i:s');
+        $end_date = date(\app\classes\Sync::$dateString);
         $error = json_encode([]);
         $log->end($end_date, $error);
         return (($exit) ? ExitCode::OK : 1);

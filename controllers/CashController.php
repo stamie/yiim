@@ -97,7 +97,7 @@ class CashController extends \yii\web\Controller
                 $return2 = $cashing->saveCashFile($exec);
                 if ($return2) {
                     $cashModel = new Cash();
-                    $cashModel->create_date_time = date('Y-m-d H:i:s');
+                    $cashModel->create_date_time = date(\app\classes\Sync::$dateString);
                     $cashModel->cities_id        = $city;
                     $cashModel->wp_prefix_id     = $wp_prefix;
                     $cashModel->json_name        = $dirNames[$wp_prefix] . $fileName;

@@ -37,7 +37,7 @@ class CashController extends Controller
         // ha CashLog-ban van olyan end date ami üres, s nem szabad figyelmenkívül hagynia, akkor 
         $allCashLogs = CashLog::find()->where('end_datetime is null')->all();
         $cashLog = new CashLog();
-        $cashLog->start_datetime = date('Y-m-d H:i:s');
+        $cashLog->start_datetime = date(\app\classes\Sync::$dateString);
         $cashLog->type = 'yacht cash';
         $cashLog->save();
 
@@ -45,7 +45,7 @@ class CashController extends Controller
             //Összes null végű CashLog lezárása
             if (is_array($allCashLogs)) {
                 foreach ($allCashLogs as $cashLogNeedClose) {
-                    $d = date('Y-m-d H:i:s');
+                    $d = date(\app\classes\Sync::$dateString);
                     $cashLogNeedClose->end_datetime = $d;
                     $cashLogNeedClose->ret_value = 'ERROR (UNDEFINIED)';
                     $cashLogNeedClose->save(0);
@@ -53,7 +53,7 @@ class CashController extends Controller
             }
         } else {
             if (is_array($allCashLogs) && count($allCashLogs) > 0) {
-                $d = date('Y-m-d H:i:s');
+                $d = date(\app\classes\Sync::$dateString);
                 $cashLog->end_datetime = $d;
                 $cashLog->ret_value = 'ERROR (RUN ANY JOBS)';
                 $cashLog->save(0);
@@ -67,7 +67,7 @@ class CashController extends Controller
             $date_from = strtotime($date_from) + (7 * Booking::DAY_MINUTE);
             $date_from = date('Y-m-d', $date_from);
             if (!$return) {
-                $d = date('Y-m-d H:i:s');
+                $d = date(\app\classes\Sync::$dateString);
                 $cashLog->end_datetime = $d;
                 $cashLog->ret_value = 'ERROR (SYNCRON)';
                 $cashLog->save(0);
@@ -75,7 +75,7 @@ class CashController extends Controller
             }
         }
 
-        $d = date('Y-m-d H:i:s');
+        $d = date(\app\classes\Sync::$dateString);
         $cashLog->end_datetime = $d;
         $cashLog->ret_value = 'OK';
         $cashLog->save(0);
@@ -115,9 +115,9 @@ class CashController extends Controller
                     $cashModel = Cash::findOne(['from_date' => $date_from, 'duration' => $duration, 'xml_id' => $xml->id]);
                     if (!$cashModel) {
                         $cashModel = new Cash();
-                        $cashModel->create_date_time = date('Y-m-d H:i:s');
+                        $cashModel->create_date_time = date(\app\classes\Sync::$dateString);
                     } else {
-                        $cashModel->update_date_time = date('Y-m-d H:i:s');
+                        $cashModel->update_date_time = date(\app\classes\Sync::$dateString);
                     }
                     $cashModel->from_date        = $date_from;
                     $cashModel->xml_id           = $xml->id;
