@@ -5,7 +5,6 @@ use app\classes\Sync;
 class CountrySync extends Sync{
     public $code;
     public $name;
-    public $is_active;
     public function __construct($ID = null, $xmlId, $xmlJsonId, $code_, $name_, $isActive = 1)
     {
         parent::__construct($ID, $xmlId, $xmlJsonId, $isActive);
