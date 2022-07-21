@@ -45,7 +45,7 @@ class NausysService  extends ServiceSync {
                 self::inactiveRows( intval($xmlId) );
                 $return = true;
                 foreach ($objectes as $obj) {
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name->textEN, 1 );
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), $obj->name->textEN, 1 );
                     $return = $return && $objObj->sync();
                 }
                 return $return;
@@ -57,7 +57,7 @@ class NausysService  extends ServiceSync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows( int $xml_id) {
         $objName = self::$model;
         $objectes = $objName::findAll([ 'xml_id' => $xml_id]);
         foreach ($objectes as $obj)

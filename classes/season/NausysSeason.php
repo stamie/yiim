@@ -86,7 +86,7 @@ class NausysSeason  extends SeasonSync {
 
                 foreach ($objectes as $obj2) {
 //var_dump($obj); exit;
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj2->id), $obj2->season, 1 ,
+                    $objObj = new self::$modelName( null, 0, intval($obj2->id), $obj2->season, 1 ,
                         $obj2->charterCompanyId,
                         date('Y-m-d', strtotime($obj2->from)),
                         date('Y-m-d', strtotime($obj2->to)),
@@ -109,7 +109,7 @@ class NausysSeason  extends SeasonSync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows( int $xml_id) {
 
         $objName = self::$model;
 

@@ -75,7 +75,7 @@ class NausysYachtCategory  extends YachtCategorySync {
 
                 foreach ($objectes as $obj) {
 
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name->textEN ); //, 1 );
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), $obj->name->textEN ); //, 1 );
                     $return = $return && $objObj->sync();
                     
                 }
@@ -93,7 +93,7 @@ class NausysYachtCategory  extends YachtCategorySync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows( int $xml_id) {
 
         $objName = self::$model;
 

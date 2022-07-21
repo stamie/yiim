@@ -66,12 +66,12 @@ class NausysCountry  extends CountrySync {
 
                 $obectes = $obj->countries;
                 
-                self::inactiveCountries(intval($prId), $xmlId);
+                self::inactiveCountries($xmlId);
                 $return = true;
 
                 foreach ($obectes as $obect) {
 
-                    $obectObj = new self::$modelName( null, 0, $prId, intval($obect->id), $obect->code, $obect->name->textEN, true );
+                    $obectObj = new self::$modelName( null, 0, intval($obect->id), $obect->code, $obect->name->textEN, true );
                     $return = $return && $obectObj->syncCountry();
                     
                 }
@@ -85,7 +85,7 @@ class NausysCountry  extends CountrySync {
         return false;
     }
 
-    private static function inactiveCountries(int $prId, int $xmlId) {
+    private static function inactiveCountries(int $xmlId) {
 
         $obectes = Country::findAll([ 'xml_id' => $xmlId]);
         foreach ($obectes as $obect)
