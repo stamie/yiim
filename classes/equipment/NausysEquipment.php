@@ -8,12 +8,10 @@ use app\models\Xml;
 
 class NausysEquipment  extends EquipmentSync
 {
-
     private static $resturl = 'http://ws.nausys.com/CBMS-external/rest/catalogue/v6/equipment';
     private static $modelName = 'app\classes\equipment\NausysEquipment';
     private static $model = 'app\models\Equipment';
     private static $objectname = 'equipment';
-
     public function __construct($ID = null, $xmlJsonId, $name_, $equipment_category, $isActive = 1)
     {
         $xmlId = 0;
@@ -23,7 +21,7 @@ class NausysEquipment  extends EquipmentSync
         }
         parent::__construct($ID, $xmlId, $xmlJsonId, $name_, $equipment_category, $isActive);
     }
-    public static function syncronise($prId)
+    public static function syncronise()
     {
         $cred = new Nausys();
         $ch = curl_init();
@@ -49,7 +47,7 @@ class NausysEquipment  extends EquipmentSync
                 $return = true;
                 foreach ($objectes as $obj2) {
                     $catId = isset($obj2->categoryId) ? intval($obj2->categoryId) : 0;
-                    $objObj = new self::$modelName(null, 0, $prId, intval($obj2->id), $obj2->name->textEN,  $catId, 1);
+                    $objObj = new self::$modelName(null, 0, intval($obj2->id), $obj2->name->textEN,  $catId, 1);
                     $return = $return && $objObj->sync();
                 }
                 return $return;
@@ -57,7 +55,7 @@ class NausysEquipment  extends EquipmentSync
         }
         return false;
     }
-    private static function inactiveRows( int $xml_id)
+    private static function inactiveRows(int $xml_id)
     {
         $objName = self::$model;
         $objectes = $objName::findAll(['xml_id' => $xml_id]);
