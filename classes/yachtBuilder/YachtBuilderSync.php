@@ -3,17 +3,10 @@
 namespace app\classes\yachtBuilder;
 
 use app\models\YachtBuilder;
+use app\classes\Sync;
 
-class YachtBuilderSync {
+class YachtBuilderSync extends Sync{
     private static $model = 'app\models\YachtBuilder';
-    
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
 
     /**
      * 

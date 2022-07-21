@@ -1,15 +1,10 @@
 <?php
 namespace app\classes\service;
 use app\models\ServiceType;
-class ServiceSync {
+use app\classes\Sync;
+class ServiceSync extends Sync{
     private static $model = 'app\models\Service';
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
+
     /**
      * 
      * Base functions 

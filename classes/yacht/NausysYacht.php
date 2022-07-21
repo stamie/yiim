@@ -479,7 +479,6 @@ class NausysYacht  extends YachtSync
 
     public static function syncroniseYachtsAndServices($id, $minId = 1)
     {
-
         echo "S Sercices kezdete";
         $return = false;
         $array = [0];
@@ -490,7 +489,6 @@ class NausysYacht  extends YachtSync
             $yacht = Yacht::find()->where(['is_active' => 1])->where(['xml_id' => $id])->andWhere(['not in', 'id', $array])->andWhere('id >= ' . $minId)->one();
         }
         echo "S Sercices vége";
-
         return $return;
     }
     /**
@@ -500,7 +498,6 @@ class NausysYacht  extends YachtSync
 
     public static function syncroniseYachtsAndStandardEquipment($id)
     {
-
         echo "SE Sercices kezdete";
         $return = false;
         $array = [0];
@@ -511,7 +508,6 @@ class NausysYacht  extends YachtSync
             $yacht = Yacht::find()->where(['is_active' => 1])->where(['xml_id' => $id])->andWhere(['not in', 'id', $array])->one();
         }
         echo "SE Sercices vége";
-
         return $return;
     }
 
@@ -522,7 +518,6 @@ class NausysYacht  extends YachtSync
 
     public static function syncroniseYachtsAndAdditionalEquipment($id)
     {
-
         echo "AE Sercices kezdete";
         $return = false;
         $array = [0];
@@ -533,7 +528,6 @@ class NausysYacht  extends YachtSync
             $yacht = Yacht::find()->where(['is_active' => 1])->where(['xml_id' => $id])->andWhere(['not in', 'id', $array])->one();
         }
         echo "AE Sercices vége";
-
         return $return;
     }
     /**
@@ -543,7 +537,6 @@ class NausysYacht  extends YachtSync
 
     public static function syncroniseYachtsAndCheckInPeriod($id)
     {
-
         echo "CIP Sercices kezdete";
         $return = false;
         $array = [0];
@@ -554,7 +547,6 @@ class NausysYacht  extends YachtSync
             $yacht = Yacht::find()->where(['is_active' => 1])->where(['xml_id' => $id])->andWhere(['not in', 'id', $array])->one();
         }
         echo "CIP Sercices vége";
-
         return $return;
     }
     public static function syncroniseOneYacht($xml_json_id)

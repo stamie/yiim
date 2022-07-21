@@ -3,27 +3,16 @@
 namespace app\classes\company;
 
 use app\models\Bank;
+use app\classes\Sync;
 
-class BankSync {
+class BankSync extends Sync {
     private static $model = 'app\models\Bank';
-    
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
-
-
     protected $company_id;
     protected $bank_name;
     protected $bank_address;
     protected $account_number;
     protected $swift;
     protected $iban;
-
-    // bankAccounts
 
     /**
      * 

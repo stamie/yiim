@@ -4,18 +4,11 @@ namespace app\classes\discountItem;
 
 use app\models\DestinationDiscountItem;
 use app\models\DiscountItem;
+use app\classes\Sync;
 
-class DiscountItemSync {
+class DiscountItemSync extends Sync{
     private static $model = 'app\models\DiscountItem';
     
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
-
     /**
      * 
      * Base functions 
@@ -24,14 +17,10 @@ class DiscountItemSync {
     public function __construct($ID = null, $xmlId, $xmlJsonId, $name_, $isActive = 1)
     {
         $this->id = $ID;
-        
-        
         $this->xml_id = $xmlId;
         $this->xml_json_id = $xmlJsonId;
         $this->name = $name_;
         $this->is_active = intval($isActive);
-        
-
     }
     /**
      * 
@@ -42,13 +31,8 @@ class DiscountItemSync {
      * 
      * Syncrons function
      */
-    
-     
     public function sync () {
-
-
         if ($this) {
-
             $condition = [
                 
                 'xml_id' => $this->xml_id,

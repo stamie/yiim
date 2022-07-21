@@ -1,15 +1,9 @@
 <?php
 namespace app\classes\steeringtype;
 use app\models\SteeringType;
-class SteeringTypeSync {
+use app\classes\Sync;
+class SteeringTypeSync extends Sync{
     private static $model = 'app\models\SteeringType';
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
     /**
      * 
      * Base functions 

@@ -4,16 +4,10 @@ namespace app\classes\port;
 
 use app\models\Port;
 use app\models\Region;
+use app\classes\Sync;
 
-class PortSync {
+class PortSync extends Sync{
     private static $model = 'app\models\Port';
-    protected $id;
-    protected $wp_id;
-    protected $wp_prefix;
-    protected $xml_id;
-    protected $xml_json_id;
-    protected $name;
-    protected $is_active;
     protected $region_id;
     protected  $xml_long;
     protected  $xml_lat;
