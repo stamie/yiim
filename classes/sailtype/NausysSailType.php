@@ -47,7 +47,7 @@ class NausysSailType  extends SailTypeSync {
                 if ($xml){
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId) );
+                self::inactiveRows( intval($xmlId) );
                 $return = true;
                 foreach ($objectes as $obj2) {
                     $objObj = new self::$modelName( null, 0, $prId, intval($obj2->id), $obj2->name->textEN, 1 );

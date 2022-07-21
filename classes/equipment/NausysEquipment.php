@@ -45,7 +45,7 @@ class NausysEquipment  extends EquipmentSync
                 if ($xml) {
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId));
+                self::inactiveRows( intval($xmlId));
                 $return = true;
                 foreach ($objectes as $obj2) {
                     $catId = isset($obj2->categoryId) ? intval($obj2->categoryId) : 0;
