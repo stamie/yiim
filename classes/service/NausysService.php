@@ -42,7 +42,7 @@ class NausysService  extends ServiceSync {
                 if ($xml){
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId) );
+                self::inactiveRows( intval($xmlId) );
                 $return = true;
                 foreach ($objectes as $obj) {
                     $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name->textEN, 1 );

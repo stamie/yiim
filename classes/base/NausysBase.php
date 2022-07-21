@@ -86,7 +86,7 @@ class NausysBase  extends BaseSync {
                 if ($xml){
                     $xmlId = $xml->id;
                 }
-                self::inactiveRows(intval($prId), intval($xmlId) );
+                self::inactiveRows( intval($xmlId) );
 
                 $return = true;
 
