@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 
  * Szinkronizációs kontroll
@@ -8,18 +7,13 @@
  * Év: 2021
  * 
  */
-
 namespace app\controllers;
-
 use Yii;
 use app\models\TablePrefix;
 use app\models\Xml;
-use app\models\SyncronLog;
 use app\models\CashLog;
-
 class SyncController extends \yii\web\Controller
 {
-
     /**
      * 
      * ### Országok szinkronja (XXXXX)
@@ -29,25 +23,20 @@ class SyncController extends \yii\web\Controller
     {
         $request = Yii::$app->request;
         $id       = $request->get('id') ? $request->get('id') : null;
-
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
-
             $prefix = '';
             $prId = 0;
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
             }
-
             return $this->render('index', ['pr' => $prefix, 'prId' => $prId]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
-    /**
+    /*
      * 
      * ### Országok szinkronja (XXXXX)
      * 
@@ -55,7 +44,6 @@ class SyncController extends \yii\web\Controller
     public function actionCountry($id)
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -63,33 +51,26 @@ class SyncController extends \yii\web\Controller
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
                     $countryClass = "app\classes\country\\" . $xml->class_name . "Country";
-
-                    $countryRet = $countryClass::syncronise($prId);
+                    $countryRet = $countryClass::syncronise();
                     $return = $return && $countryRet;
                 }
             }
-
             return $this->render('country', ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      * 
      * ### Felszereltség kategória (equipment categories) szinkronja (XXXXX)
      * 
      */
-
     public function actionEquipmentcategory($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -97,22 +78,16 @@ class SyncController extends \yii\web\Controller
             $view = 'equipmentcategory';
             $className = 'EquipmentCategory';
             $dirName = 'equipmentCategory';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -127,7 +102,6 @@ class SyncController extends \yii\web\Controller
     public function actionYachtbuilder($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -135,8 +109,6 @@ class SyncController extends \yii\web\Controller
             $view = 'yachtbuilder';
             $className = 'YachtBuilder';
             $dirName = 'yachtBuilder';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
@@ -146,11 +118,10 @@ class SyncController extends \yii\web\Controller
                 foreach ($xmls as $xml) {
 
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -173,22 +144,16 @@ class SyncController extends \yii\web\Controller
             $view = 'enginebuilder';
             $className = 'EngineBuilder';
             $dirName = 'engineBuilder';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -203,7 +168,6 @@ class SyncController extends \yii\web\Controller
     public function actionEquipment($id)
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -211,27 +175,21 @@ class SyncController extends \yii\web\Controller
             $view = 'equipment';
             $className = 'Equipment';
             $dirName = 'equipment';
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      *
      * ### Yacht kategóriák szinkronja (XX)
@@ -240,7 +198,6 @@ class SyncController extends \yii\web\Controller
     public function actionYachtcategory($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -248,29 +205,21 @@ class SyncController extends \yii\web\Controller
             $view = 'yachtcategory';
             $className = 'YachtCategory';
             $dirName = 'yachtCategory';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
-
     /**
      * 
      * ### PriceMeasure szinkronja (XXXXX)
@@ -279,7 +228,6 @@ class SyncController extends \yii\web\Controller
     public function actionPricemeasure($id)
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -287,17 +235,13 @@ class SyncController extends \yii\web\Controller
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
                     $class = "app\classes\pricemeasure\\" . $xml->class_name . "PriceMeasure";
-
-                    $ret = $class::syncronise($prId);
+                    $ret = $class::syncronise();
                     $return = $return && $ret;
                 }
             }
-
             return $this->render('country', ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -313,15 +257,10 @@ class SyncController extends \yii\web\Controller
     {
         $request = Yii::$app->request;
         $id = intval($request->get('id'));
-        $startDate = date('Y-m-d H:i:s');
-        //$log = SyncronLog::log($startDate, 'Yacht Model Syncron', $this->parentLogId);
-        $allCashLogs = CashLog::find()->where('end_datetime is null')->all();
         $cashLog = new CashLog();
         $cashLog->start_datetime = date('Y-m-d H:i:s');
         $cashLog->type = 'yacht model cash';
         $cashLog->save();
-
-
         $tablePrefix = TablePrefix::findOne($id);
         $prefix = '';
         $prId = 0;
@@ -329,23 +268,16 @@ class SyncController extends \yii\web\Controller
         $view = 'yachtmodel';
         $className = 'YachtModel';
         $dirName = 'yachtModel';
-
-
         if ($tablePrefix) {
             $prefix = $tablePrefix->prefix;
             $prId = $tablePrefix->id;
-
             $xmls = Xml::find()->all();
-
             foreach ($xmls as $xml) {
-
                 $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                $returnObj = $class::syncronise($prId);
+                $returnObj = $class::syncronise();
                 $return = $return && $returnObj;
             }
         }
-        $end_date = date('Y-m-d H:i:s');
-        //$log->end($end_date, json_encode(array()));
         if ($return) {
             $d = date('Y-m-d H:i:s');
             $cashLog->end_datetime = $d;
@@ -357,7 +289,6 @@ class SyncController extends \yii\web\Controller
         $cashLog->end_datetime = $d;
         $cashLog->ret_value = 'ERROR (SYNCRON)';
         $cashLog->save(0);
-        var_dump($return);
         return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
     }
     /**
@@ -368,7 +299,6 @@ class SyncController extends \yii\web\Controller
     public function actionYacht($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -376,22 +306,16 @@ class SyncController extends \yii\web\Controller
             $view = 'yacht';
             $className = 'Yacht';
             $dirName = 'yacht';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -414,28 +338,21 @@ class SyncController extends \yii\web\Controller
             $view = 'region';
             $className = 'Region';
             $dirName = 'region';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      *
      * ### Base szinkronja
@@ -452,28 +369,21 @@ class SyncController extends \yii\web\Controller
             $view = 'base';
             $className = 'Base';
             $dirName = 'base';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      *
      * ### Locations szinkronja
@@ -482,7 +392,6 @@ class SyncController extends \yii\web\Controller
     public function actionPort($id)
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -490,22 +399,16 @@ class SyncController extends \yii\web\Controller
             $view = 'port';
             $className = 'Port';
             $dirName = 'port';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -519,7 +422,6 @@ class SyncController extends \yii\web\Controller
     public function actionSteeringtype($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -527,23 +429,16 @@ class SyncController extends \yii\web\Controller
             $view = 'steeringtype';
             $className = 'SteeringType';
             $dirName = 'steeringtype';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -557,7 +452,6 @@ class SyncController extends \yii\web\Controller
     public function actionSailtype($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -565,23 +459,16 @@ class SyncController extends \yii\web\Controller
             $view = 'sailtype';
             $className = 'SailType';
             $dirName = 'sailtype';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -604,23 +491,16 @@ class SyncController extends \yii\web\Controller
             $view = 'service';
             $className = 'Service';
             $dirName = 'service';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
@@ -635,7 +515,6 @@ class SyncController extends \yii\web\Controller
     public function actionCompany($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -643,30 +522,21 @@ class SyncController extends \yii\web\Controller
             $view = 'company';
             $className = 'Company';
             $dirName = 'company';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
-
     /**
      *
      * ### DiscountItem szinkronja
@@ -675,7 +545,6 @@ class SyncController extends \yii\web\Controller
     public function actionDiscountitemsync($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -683,29 +552,21 @@ class SyncController extends \yii\web\Controller
             $view = 'discountitemsync';
             $className = 'DiscountItem';
             $dirName = 'discountItem';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');
         }
     }
-
     /**
      *
      * ### Season szinkronja
@@ -714,7 +575,6 @@ class SyncController extends \yii\web\Controller
     public function actionSeasonsync($id) //Fejlesztendő
     {
         if (!Yii::$app->user->isGuest) {
-
             $tablePrefix = TablePrefix::findOne($id);
             $prefix = '';
             $prId = 0;
@@ -722,23 +582,16 @@ class SyncController extends \yii\web\Controller
             $view = 'seasonsync';
             $className = 'Season';
             $dirName = 'season';
-
-
             if ($tablePrefix) {
                 $prefix = $tablePrefix->prefix;
                 $prId = $tablePrefix->id;
-
                 $xmls = Xml::find()->all();
-
                 foreach ($xmls as $xml) {
-
                     $class = "app\classes\\$dirName\\" . $xml->class_name . $className;
-
-                    $returnObj = $class::syncronise($prId);
+                    $returnObj = $class::syncronise();
                     $return = $return && $returnObj;
                 }
             }
-
             return $this->render($view, ['pr' => $prefix, 'prId' => $prId, 'return' => $return]);
         } else {
             $this->redirect('/web/index.php');

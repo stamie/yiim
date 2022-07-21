@@ -21,7 +21,7 @@ class NausysSteeringType  extends SteeringTypeSync {
      * 
      * Syncrons function
      */
-    public static function syncronise($prId) {
+    public static function syncronise() {
         $cred = new Nausys();
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, self::$resturl );

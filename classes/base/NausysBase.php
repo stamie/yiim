@@ -51,7 +51,7 @@ class NausysBase  extends BaseSync {
      * Syncrons function
      */
 
-    public static function syncronise($prId) {
+    public static function syncronise() {
 
         $cred = new Nausys();
         
