@@ -62,7 +62,7 @@ class NausysSailType  extends SailTypeSync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows( int $xml_id) {
         $objName = self::$model;
         $objectes = $objName::findAll([ 'xml_id' => $xml_id]);
         foreach ($objectes as $obj)

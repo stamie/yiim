@@ -53,7 +53,7 @@ class NausysEquipmentCategory  extends EquipmentCategorySync {
         }
         return false;
     }
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows( int $xml_id) {
         $objectes = EquipmentCategory::findAll(['xml_id' => $xml_id]);
         foreach ($objectes as $obj)
         {

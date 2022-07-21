@@ -122,7 +122,7 @@ class NausysCompany  extends CompanySync {
                     if ($returnId && isset($obj->bankAccounts)){
                         foreach($obj->bankAccounts as $bank){
                             $subObjectsName = self::$subModelsName;
-                            $subObject = new $subObjectsName ( null, 1, intval($prId), intval($xmlId) ,
+                            $subObject = new $subObjectsName ( null, 1, intval($xmlId) ,
                                                                 $objObj->xml_json_id,                                    
                                                                 $bank->bankName,
                                                                 $bank->bankAddress,
@@ -152,7 +152,7 @@ class NausysCompany  extends CompanySync {
      * 
      * Inactive All rows function
      */
-    private static function inactiveRows(int $prId, int $xml_id) {
+    private static function inactiveRows(int $xml_id) {
 
         $objName = self::$model;
 
