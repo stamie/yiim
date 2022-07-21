@@ -102,7 +102,7 @@ class NausysCompany  extends CompanySync {
 
                 foreach ($objectes as $obj) {
 
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name, 1, //->textEN, 1, 
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), $obj->name, 1, //->textEN, 1, 
                                                     isset($obj->address)?$obj->address:'0',
                                                     isset($obj->city)?$obj->city:'0',
                                                     isset($obj->zip)?$obj->zip:'0',

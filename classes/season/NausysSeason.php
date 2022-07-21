@@ -86,7 +86,7 @@ class NausysSeason  extends SeasonSync {
 
                 foreach ($objectes as $obj2) {
 //var_dump($obj); exit;
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj2->id), $obj2->season, 1 ,
+                    $objObj = new self::$modelName( null, 0, intval($obj2->id), $obj2->season, 1 ,
                         $obj2->charterCompanyId,
                         date('Y-m-d', strtotime($obj2->from)),
                         date('Y-m-d', strtotime($obj2->to)),

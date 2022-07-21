@@ -92,7 +92,7 @@ class NausysBase  extends BaseSync {
 
                 foreach ($objectes as $obj) {
                     
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), 1, 
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), 1, 
                                                     intval($obj->locationId), 
                                                     intval($obj->companyId),
                                                     $obj->checkInTime,

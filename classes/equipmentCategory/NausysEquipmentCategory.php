@@ -45,7 +45,7 @@ class NausysEquipmentCategory  extends EquipmentCategorySync {
                 self::inactiveRows( intval($xmlId) );
                 $return = true;
                 foreach ($objectes as $obj) {
-                    $objObj = new self::$modelName( null, 0, $prId, intval($obj->id), $obj->name->textEN ); //, 1 );
+                    $objObj = new self::$modelName( null, 0, intval($obj->id), $obj->name->textEN ); //, 1 );
                     $return = $return && $objObj->sync();
                 }
                 return $return;
