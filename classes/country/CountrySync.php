@@ -20,18 +20,17 @@ class CountrySync extends Sync{
             $country = Country::findOne($condition);
             if ($country){
                 $country->is_active = 1;
-                $country->save();
-                return $country->save();
+                $country->save(0);
+                return 1;
             } else {
                 $country = new Country();
-                $country->wp_id = $this->wp_id;
-                $country->wp_prefix = $this->wp_prefix;
                 $country->xml_id = $this->xml_id;
                 $country->xml_json_id = $this->xml_json_id;
                 $country->code = $this->code;
                 $country->name = $this->name;
-                $country->is_active = $this->is_active;
-                return $country->save();
+                $country->is_active = 1;
+                if($country->save())
+                return 1;
             }
         }
         return false;
