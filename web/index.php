@@ -14,7 +14,6 @@ header ("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 //header ("Access-Control-Allow-Methods: POST");
 //header ("Access-Control-Allow-Headers: https://boattheglobe.*");
 
-
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
