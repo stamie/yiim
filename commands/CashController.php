@@ -156,13 +156,19 @@ class CashController extends Controller
                                 $yachtCash->location_id = $elem["location_id"];
                                 if ($yacht) {
                                     $yachtModel            = YachtModel::findOne(["xml_json_id" => $yacht->yacht_model_id, "xml_id" => $yacht->xml_id]);
-                                    $yachtCash->model_id   = $yachtModel->xml_json_id;
-                                    $yachtCash->model      = $yachtModel->name;
-                                    $yachtCategory         = YachtCategory::findOne(['xml_id' => $yachtModel->xml_id, 'xml_json_id' => $yachtModel->category_xml_id]);
-                                    $yachtCash->length     = $yachtModel->loa;
-                                    $yachtCash->category   = $yachtCategory->name;
-                                    $yachtCash->user_price = 0;
-                                    $yachtCash->save();
+                                    if (!$yachtModel) {
+                                        $yachtCash->model_id   = $yacht->yacht_model_id;
+                                        $yachtCash->model      = 'boat1';
+                                    }
+                                    if ($yachtModel) {
+                                        $yachtCash->model_id   = $yachtModel->xml_json_id;
+                                        $yachtCash->model      = $yachtModel->name;
+                                        $yachtCategory         = YachtCategory::findOne(['xml_id' => $yachtModel->xml_id, 'xml_json_id' => $yachtModel->category_xml_id]);
+                                        $yachtCash->length     = $yachtModel->loa;
+                                        $yachtCash->category   = $yachtCategory->name;
+                                        $yachtCash->user_price = 0;
+                                        $yachtCash->save();
+                                    }
                                 }
                             }
                             if ($yacht && $yachtCash && $yachtCash->user_price != floatval($elem["priceForUser"])) {

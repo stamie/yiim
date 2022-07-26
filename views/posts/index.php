@@ -1,20 +1,25 @@
 <?php
-
 /* @var $this yii\web\View */
-
-$this->title = 'My Yii Application';
+use yii\helpers\BaseHtml;
+echo BaseHtml::beginForm ( '/web/posts/search', 'post');
 ?>
-<div class="site-index">
+<h1>Posztok hasonlítása</h1>
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
-        <?php if (!Yii::$app->user->isGuest): ?>
-            <?php foreach ($allTablePrefix as $tablePrefix): ?>
-                <p><a href="/web/sync?id=<?=$tablePrefix->id ?>"><?=$tablePrefix->url ?></a></p>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
-
+<table>
+<tr>
+    <th>Alap, ami nem változik</th><th>=></th><th>Változik, ha kell</th>
+</tr>
+<tr>
+    <td>
+        <?php echo BaseHtml::dropDownList('mit', null, $models); ?>
+       
+    </td>
+    <td></td>
+    <td><?php echo BaseHtml::dropDownList('mivel', null, $models); ?></td>
     
-    </div>
-</div>
+</tr>
+<tr>
+    <td colspan="3"><?php echo BaseHtml::submitButton('Hasonlítás') ?></td>
+</tr>
+</table>
+<?php echo BaseHtml::endForm(); ?>
