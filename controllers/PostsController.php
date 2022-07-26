@@ -56,5 +56,7 @@ class PostsController extends \yii\web\Controller
             $this->redirect('/web/site/login');
         }
         $request = Yii::$app->request;
+
+        return $this->render('replace', []);
     }
 }
